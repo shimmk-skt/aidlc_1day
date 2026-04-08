@@ -282,5 +282,103 @@
 **User Input**: "approve code generation and push this code to remote repo. stop before build and test"
 **AI Response**: Code Generation 승인 확인. Remote push 진행. Build and Test 단계 전 중단.
 **Context**: Code Generation 완료. Build and Test 대기.
+## CONSTRUCTION - Unit 1 (Backend) Functional Design 완료
+**Timestamp**: 2026-04-08T13:47:08Z
+**User Input**: "진행"
+**AI Response**: Backend unit Functional Design 수행. 3개 artifact 생성: domain-entities.md (12 entities, ER diagram), business-rules.md (17 rules), business-logic-model.md (주문생성, 결제확인, 반품, AI Q&A, 수요예측, WebSocket flow). 추가 질문 불필요 (requirements/stories에서 충분히 명확).
+**Context**: CONSTRUCTION - Unit 1 (Backend) Functional Design 완료. 사용자 승인 대기.
+
+---
+
+## CONSTRUCTION - Backend NFR/Infra/Code Plan 일괄 생성
+**Timestamp**: 2026-04-08T13:51:37Z
+**User Input**: "Backend Unit 개발 시작할거야.."
+**AI Response**: Functional Design 승인 간주. NFR Requirements, NFR Design, Infrastructure Design 일괄 생성. Code Generation Plan (Phase 1 Foundation, 10 steps) 생성. 사용자가 빠른 개발 진행을 원하여 설계 단계를 효율적으로 완료.
+**Context**: CONSTRUCTION - Backend Unit. NFR/Infra 설계 완료. Code Generation Plan 승인 대기.
+
+---
+
+## Code Generation Plan 승인
+**Timestamp**: 2026-04-08T13:57:48Z
+**User Input**: "plan 승인. 코드 생성 시작해"
+**AI Response**: Code Generation Plan 승인 확인. Phase 1 코드 생성 시작.
+**Context**: CONSTRUCTION - Backend Code Generation Part 2 시작.
+
+---
+
+## CONSTRUCTION - Backend Phase 1 Code Generation 완료
+**Timestamp**: 2026-04-08T13:57:48Z
+**User Input**: "plan 승인. 코드 생성 시작해"
+**AI Response**: Phase 1 (Foundation) 코드 생성 완료. 생성/수정 파일 목록:
+- Modified: package.json, src/index.ts, src/middleware/auth.ts, src/routes/auth.ts, src/routes/products.ts, src/routes/orders.ts, src/routes/analytics.ts
+- Created: .env.example, src/config/{env,database,redis,schema.sql,migrate,seed}.ts, src/utils/{logger,errors}.ts, src/types/index.ts, src/repositories/{user,product,order,address,refresh-token}.repository.ts, src/services/{auth,product,order,inventory}.service.ts, src/middleware/{validate,rate-limit,error-handler,request-id}.ts, src/routes/health.ts, tests/services/{order.service,errors}.test.ts, jest.config.ts
+- Deleted: src/db.ts (SQLite 제거)
+**Context**: CONSTRUCTION - Backend Code Generation Phase 1 완료. 사용자 승인 대기.
+
+---
+
+## Backend 기술 결정 질문 생성
+**Timestamp**: 2026-04-08T14:12:46Z
+**User Input**: "Backend design 과정에서 아무 질문이 없었는데, BE개발자에게 확인할 사항이 정말 아무것도 없는것인가?"
+**AI Response**: 사용자 지적 수용. 실제로 BE 개발자에게 확인해야 할 기술적 결정 사항 10개 질문 생성 (DB 마이그레이션 전략, ORM 선택, API 응답 형식, Toss 테스트 환경, WebSocket 라이브러리, 배송 캐리어, 로컬 개발 환경, 모니터링, API 문서화, Git 브랜치 전략).
+**Context**: CONSTRUCTION - Backend. 설계 단계에서 질문을 생략한 것에 대한 보완. 답변에 따라 기존 코드 수정 가능.
+
+---
+
+## Backend 기술 결정 답변 확인
+**Timestamp**: 2026-04-08T14:20:32Z
+**User Input**: "답변완료"
+**AI Response**: 10개 답변 확인. Q1:B(데이터마이그레이션), Q2:X→Prisma추천, Q3:C(JSON:API), Q4:B(Mock), Q5:X→Socket.IO추천, Q6:D(스마트택배), Q7:X→Docker Compose추천, Q8:A(CloudWatch), Q9:A(OpenAPI/Swagger), Q10:C(GitHub Flow). 추천 항목 확인 및 코드 수정 범위 결정 대기.
+**Context**: CONSTRUCTION - Backend. 기술 결정 확인 완료. 코드 수정 범위 결정 대기.
+
+---
+
+## Backend 기술 결정 반영 방침
+**Timestamp**: 2026-04-08T14:25:30Z
+**User Input**: "phase1은 유지하고 phase2부터 결정 반영해줘"
+**AI Response**: Phase 1 코드 유지. Phase 2부터 반영: Prisma ORM 전환, JSON:API 응답 형식, Socket.IO, 스마트택배 API, Docker Compose, OpenAPI/Swagger. Phase 2 코드 생성 시작.
+**Context**: CONSTRUCTION - Backend Phase 2 시작. 기술 결정 반영.
+
+---
+
+## CONSTRUCTION - Backend Phase 2 Code Generation 완료
+**Timestamp**: 2026-04-08T14:25:30Z
+**User Input**: "phase1은 유지하고 phase2부터 결정 반영해줘"
+**AI Response**: Phase 2 코드 생성 완료. 기술 결정 반영: Socket.IO (ws 대체), JSON:API 응답 헬퍼, 스마트택배 API, Mock Toss Payments, Docker Compose. 생성 파일:
+- Created: src/utils/json-api.ts, src/config/socket.ts, src/services/{payment,shipping,return,address}.service.ts, src/routes/{payments,shipping,returns,addresses}.ts, docker-compose.yml
+- Modified: package.json (socket.io, @prisma/client, swagger 추가), src/index.ts (Socket.IO + Phase 2 routes 통합)
+**Context**: CONSTRUCTION - Backend Phase 2 완료. 사용자 승인 대기.
+
+---
+
+## Critical 불일치 3건 수정 완료
+**Timestamp**: 2026-04-08T14:33:59Z
+**User Input**: "크리티컬 3개에 대해 지금 수정해 줘"
+**AI Response**: 3건 수정 완료:
+1. JSON:API 응답 형식 통일 — auth.ts, products.ts, orders.ts, analytics.ts에 jsonApiSuccess/jsonApiList 적용
+2. Repository 패턴 통일 — payment.repository.ts, return.repository.ts, shipment.repository.ts 생성. payment/return/shipping service를 repository 사용으로 리팩토링
+3. Socket.IO broadcast 추가 — order.service.ts의 create()에 broadcast.newOrder/inventoryUpdate, transitionStatus()에 broadcast.orderUpdate 추가. findById() 권한 체크에 admin 세부 역할 포함.
+**Context**: CONSTRUCTION - Backend. Phase 1↔2 불일치 해결.
+
+---
+
+## CONSTRUCTION - Backend Phase 3 Code Generation 완료
+**Timestamp**: 2026-04-08T14:41:43Z
+**User Input**: "생성해줘"
+**AI Response**: Phase 3 (Intelligence) 코드 생성 완료. 생성 파일:
+- src/services/ai.service.ts (Bedrock Claude: 재고 Q&A, 수요 내러티브, 상품 설명)
+- src/services/forecast.service.ts (이동 평균 수요 예측, ROP 계산, 재주문 제안)
+- src/services/recommendation.service.ts (함께 구매한 상품, 개인화 추천)
+- src/routes/ai.ts, forecast.ts, recommendations.ts
+- src/index.ts 수정 (Phase 3 routes 추가)
+**Context**: CONSTRUCTION - Backend Phase 3 완료.
+
+---
+
+## CONSTRUCTION - Backend Phase 4 Code Generation 완료
+**Timestamp**: 2026-04-08T14:50:22Z
+**User Input**: "우선 phase#4 진행해주고 위 보완사항은 FE 및 Infra 코드 병합 이후 진행가능할까"
+**AI Response**: 보완 사항 12건 pending-fixes.md에 기록. Phase 4 코드 생성 완료: event-bus.ts (CloudEvents in-process), marketplace.service.ts (Coupang Mock), erp-integration.service.ts (어댑터 패턴), marketplace route. Backend Unit 전체 Phase 1~4 완료.
+**Context**: CONSTRUCTION - Backend Unit 코드 생성 전체 완료. FE/Infra Unit 진행 대기.
 
 ---

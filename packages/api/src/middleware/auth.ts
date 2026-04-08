@@ -1,35 +1,32 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'inventrix-secret-key-change-in-production';
+import { env } from '../config/env.js';
+import { UnauthorizedError, ForbiddenError } from '../utils/errors.js';
+import type { AuthUser } from '../types/index.js';
 
 export interface AuthRequest extends Request {
-  user?: { id: number; email: string; role: string };
+  user?: AuthUser;
 }
 
-export const authenticate = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const authenticate = (req: AuthRequest, _res: Response, next: NextFunction) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
-  
-  if (!token) {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
-
+  if (!token) return next(new UnauthorizedError());
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { id: number; email: string; role: string };
-    req.user = decoded;
+    req.user = jwt.verify(token, env.jwtSecret) as AuthUser;
     next();
-  } catch (error) {
-    res.status(401).json({ error: 'Invalid token' });
+  } catch {
+    next(new UnauthorizedError('Invalid token'));
   }
 };
 
-export const requireAdmin = (req: AuthRequest, res: Response, next: NextFunction) => {
-  if (req.user?.role !== 'admin') {
-    return res.status(403).json({ error: 'Admin access required' });
+export const requireAdmin = (req: AuthRequest, _res: Response, next: NextFunction) => {
+  if (!req.user || !['admin', 'operations_manager', 'inventory_manager', 'finance_manager'].includes(req.user.role)) {
+    return next(new ForbiddenError('Admin access required'));
   }
   next();
 };
 
-export const generateToken = (user: { id: number; email: string; role: string }) => {
-  return jwt.sign(user, JWT_SECRET, { expiresIn: '7d' });
+export const requireRole = (...roles: string[]) => (req: AuthRequest, _res: Response, next: NextFunction) => {
+  if (!req.user || !roles.includes(req.user.role)) return next(new ForbiddenError());
+  next();
 };

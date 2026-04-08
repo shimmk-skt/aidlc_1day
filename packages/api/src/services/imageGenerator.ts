@@ -23,7 +23,7 @@ export async function generateProductImage(productName: string, description: str
   };
 
   const command = new InvokeModelCommand({
-    modelId: 'amazon.nova-canvas-v1:0',
+    modelId: process.env.BEDROCK_IMAGE_MODEL_ID || 'amazon.nova-canvas-v1:0',
     contentType: 'application/json',
     accept: 'application/json',
     body: JSON.stringify(payload)

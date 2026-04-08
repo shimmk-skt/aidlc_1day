@@ -1,88 +1,45 @@
 import { Router } from 'express';
-import db from '../db.js';
+import { body, param } from 'express-validator';
+import { validate } from '../middleware/validate.js';
 import { authenticate, requireAdmin, AuthRequest } from '../middleware/auth.js';
+import { orderService } from '../services/order.service.js';
+import { jsonApiSuccess, jsonApiList } from '../utils/json-api.js';
 
 const router = Router();
 
-router.get('/', authenticate, (req: AuthRequest, res) => {
-  let orders;
-  if (req.user?.role === 'admin') {
-    orders = db.prepare(`
-      SELECT o.*, u.name as user_name, u.email as user_email 
-      FROM orders o 
-      JOIN users u ON o.user_id = u.id 
-      ORDER BY o.created_at DESC
-    `).all();
-  } else {
-    orders = db.prepare('SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC').all(req.user?.id);
-  }
-  res.json(orders);
+router.get('/', authenticate, async (req: AuthRequest, res, next) => {
+  try {
+    const orders = req.user?.role === 'admin' || req.user?.role === 'operations_manager'
+      ? await orderService.findAll()
+      : await orderService.findByUser(req.user!.id);
+    res.json(jsonApiList(orders));
+  } catch (e) { next(e); }
 });
 
-router.get('/:id', authenticate, (req: AuthRequest, res) => {
-  const order = db.prepare(`
-    SELECT o.*, u.name as user_name, u.email as user_email 
-    FROM orders o 
-    JOIN users u ON o.user_id = u.id 
-    WHERE o.id = ?
-  `).get(req.params.id) as any;
-
-  if (!order) {
-    return res.status(404).json({ error: 'Order not found' });
-  }
-
-  if (req.user?.role !== 'admin' && order.user_id !== req.user?.id) {
-    return res.status(403).json({ error: 'Access denied' });
-  }
-
-  const items = db.prepare(`
-    SELECT oi.*, p.name as product_name 
-    FROM order_items oi 
-    JOIN products p ON oi.product_id = p.id 
-    WHERE oi.order_id = ?
-  `).all(req.params.id);
-
-  res.json({ ...order, items });
+router.get('/:id', authenticate, param('id').isInt(), validate, async (req: AuthRequest, res, next) => {
+  try { res.json(jsonApiSuccess(await orderService.findById(parseInt(req.params.id), req.user?.id, req.user?.role))); }
+  catch (e) { next(e); }
 });
 
-router.post('/', authenticate, (req: AuthRequest, res) => {
-  const { items } = req.body;
-
-  let subtotal = 0;
-  const productUpdates: any[] = [];
-
-  for (const item of items) {
-    const product = db.prepare('SELECT * FROM products WHERE id = ?').get(item.product_id) as any;
-    if (!product || product.stock < item.quantity) {
-      return res.status(400).json({ error: `Insufficient stock for product ${item.product_id}` });
-    }
-    subtotal += product.price * item.quantity;
-    productUpdates.push({ id: item.product_id, quantity: item.quantity, price: product.price });
+router.post('/', authenticate,
+  body('items').isArray({ min: 1 }),
+  body('items.*.product_id').isInt({ min: 1 }),
+  body('items.*.quantity').isInt({ min: 1, max: 1000 }),
+  validate,
+  async (req: AuthRequest, res, next) => {
+    try { res.status(201).json(jsonApiSuccess(await orderService.create(req.user!.id, req.body.items))); }
+    catch (e) { next(e); }
   }
+);
 
-  const gst = subtotal * 0.1;
-  const total = subtotal + gst;
-
-  const orderResult = db.prepare('INSERT INTO orders (user_id, subtotal, gst, total, status) VALUES (?, ?, ?, ?, ?)').run(
-    req.user?.id, subtotal, gst, total, 'pending'
-  );
-
-  const orderId = orderResult.lastInsertRowid;
-
-  for (const update of productUpdates) {
-    db.prepare('INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)').run(
-      orderId, update.id, update.quantity, update.price
-    );
-    db.prepare('UPDATE products SET stock = stock - ? WHERE id = ?').run(update.quantity, update.id);
+router.patch('/:id/status', authenticate, requireAdmin,
+  param('id').isInt(),
+  body('status').isString().notEmpty(),
+  validate,
+  async (req: AuthRequest, res, next) => {
+    try { res.json(jsonApiSuccess(await orderService.transitionStatus(parseInt(req.params.id), req.body.status))); }
+    catch (e) { next(e); }
   }
-
-  res.status(201).json({ id: orderId, subtotal, gst, total, status: 'pending' });
-});
-
-router.patch('/:id/status', authenticate, requireAdmin, (req: AuthRequest, res) => {
-  const { status } = req.body;
-  db.prepare('UPDATE orders SET status = ? WHERE id = ?').run(status, req.params.id);
-  res.json({ id: req.params.id, status });
-});
+);
 
 export default router;

@@ -1,46 +1,48 @@
 import { Router } from 'express';
-import bcrypt from 'bcrypt';
-import db from '../db.js';
-import { generateToken } from '../middleware/auth.js';
+import { body } from 'express-validator';
+import { validate } from '../middleware/validate.js';
+import { authLimiter } from '../middleware/rate-limit.js';
+import { authService } from '../services/auth.service.js';
+import { authenticate, AuthRequest } from '../middleware/auth.js';
+import { jsonApiSuccess } from '../utils/json-api.js';
 
 const router = Router();
 
-router.post('/login', (req, res) => {
-  const { email, password } = req.body;
-
-  const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email) as any;
-
-  if (!user || !bcrypt.compareSync(password, user.password)) {
-    return res.status(401).json({ error: 'Invalid credentials' });
+router.post('/login', authLimiter,
+  body('email').isEmail().normalizeEmail(),
+  body('password').isString().notEmpty(),
+  validate,
+  async (req, res, next) => {
+    try { res.json(jsonApiSuccess(await authService.login(req.body.email, req.body.password))); }
+    catch (e) { next(e); }
   }
+);
 
-  const token = generateToken({ id: user.id, email: user.email, role: user.role });
-  
-  res.json({
-    token,
-    user: { id: user.id, email: user.email, name: user.name, role: user.role }
-  });
-});
-
-router.post('/register', (req, res) => {
-  const { email, password, name } = req.body;
-
-  const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
-  if (existing) {
-    return res.status(400).json({ error: 'Email already registered' });
+router.post('/register', authLimiter,
+  body('email').isEmail().normalizeEmail().isLength({ max: 255 }),
+  body('password').isString().isLength({ min: 8, max: 128 }),
+  body('name').isString().trim().isLength({ min: 1, max: 100 }),
+  validate,
+  async (req, res, next) => {
+    try { res.status(201).json(jsonApiSuccess(await authService.register(req.body.email, req.body.password, req.body.name))); }
+    catch (e) { next(e); }
   }
+);
 
-  const hashedPassword = bcrypt.hashSync(password, 10);
-  const result = db.prepare('INSERT INTO users (email, password, name, role) VALUES (?, ?, ?, ?)').run(
-    email, hashedPassword, name, 'customer'
-  );
+router.post('/refresh',
+  body('refreshToken').isString().notEmpty(),
+  validate,
+  async (req, res, next) => {
+    try { res.json(jsonApiSuccess(await authService.refreshToken(req.body.refreshToken))); }
+    catch (e) { next(e); }
+  }
+);
 
-  const token = generateToken({ id: result.lastInsertRowid as number, email, role: 'customer' });
-  
-  res.status(201).json({
-    token,
-    user: { id: result.lastInsertRowid, email, name, role: 'customer' }
-  });
+router.post('/logout', authenticate, async (req: AuthRequest, res, next) => {
+  try {
+    if (req.body.refreshToken) await authService.logout(req.body.refreshToken);
+    res.json(jsonApiSuccess({ message: 'Logged out' }));
+  } catch (e) { next(e); }
 });
 
 export default router;
