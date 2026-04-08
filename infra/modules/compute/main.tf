@@ -86,11 +86,11 @@ resource "aws_ecs_task_definition" "api" {
     environment = [
       { name = "NODE_ENV", value = var.environment },
       { name = "PORT", value = "3001" },
-      { name = "REDIS_URL", value = "rediss://${var.redis_endpoint}:6379" }
+      { name = "DATABASE_URL", value = "postgresql://${var.rds_username}:${var.rds_password}@${var.rds_endpoint}/inventrix" },
+      { name = "REDIS_URL", value = "rediss://${var.redis_endpoint}:6379" },
+      { name = "CORS_ORIGIN", value = "*" }
     ]
-    secrets = [
-      { name = "DB_SECRET", valueFrom = var.db_secret_arn }
-    ]
+    secrets = []
     logConfiguration = {
       logDriver = "awslogs"
       options = {
@@ -100,7 +100,7 @@ resource "aws_ecs_task_definition" "api" {
       }
     }
     healthCheck = {
-      command     = ["CMD-SHELL", "curl -f http://localhost:3001/api/health || exit 1"]
+      command     = ["CMD-SHELL", "curl -f http://localhost:3001/health || exit 1"]
       interval    = 30
       timeout     = 5
       retries     = 3
@@ -183,7 +183,7 @@ resource "aws_lb_target_group" "api" {
   target_type = "ip"
 
   health_check {
-    path                = "/api/health"
+    path                = "/health"
     healthy_threshold   = 2
     unhealthy_threshold = 3
     interval            = 30

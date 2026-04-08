@@ -20,3 +20,8 @@ variable "redis_endpoint" { type = string }
 variable "db_secret_arn" { type = string }
 variable "log_retention_days" { type = number }
 variable "aws_region" { type = string }
+variable "rds_username" { type = string }
+variable "rds_password" {
+  type      = string
+  sensitive = true
+}

@@ -54,6 +54,8 @@ module "compute" {
   rds_endpoint       = module.database.rds_endpoint
   redis_endpoint     = module.cache.redis_endpoint
   db_secret_arn      = module.database.db_secret_arn
+  rds_username       = module.database.rds_username
+  rds_password       = module.database.rds_password
   log_retention_days = var.log_retention_days
   aws_region         = var.aws_region
 }
