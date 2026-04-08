@@ -1,0 +1,257 @@
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="700" math="0" shadow="0">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+
+    <!-- Title -->
+    <mxCell id="title" value="Inventrix - AWS Resource Diagram (Service Connections)" style="text;html=1;fontSize=18;fontStyle=1;align=center;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
+      <mxGeometry x="350" y="10" width="500" height="30" as="geometry"/>
+    </mxCell>
+
+    <!-- Row 1: External / Edge -->
+    <mxCell id="r1_label" value="Edge Layer" style="text;html=1;fontSize=12;fontStyle=1;align=left;fillColor=#E0E0E0;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="60" width="100" height="30" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="cloudfront" value="CloudFront" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudfront;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="200" y="50" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="acm1" value="ACM" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.certificate_manager;labelBackgroundColor=none;sketch=0;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="320" y="50" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="r53" value="Route 53&#xa;(Optional)" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.route_53;labelBackgroundColor=none;sketch=0;fontSize=9;dashed=1;" vertex="1" parent="1">
+      <mxGeometry x="440" y="50" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- Row 2: Network -->
+    <mxCell id="r2_label" value="Network Layer" style="text;html=1;fontSize=12;fontStyle=1;align=left;fillColor=#E3F2FD;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="150" width="120" height="30" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="vpc_r" value="VPC" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.vpc;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="200" y="140" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="alb_r" value="ALB" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.application_load_balancer;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="320" y="140" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="nat_r" value="NAT GW" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.nat_gateway;labelBackgroundColor=none;sketch=0;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="440" y="140" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="igw_r" value="IGW" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.internet_gateway;labelBackgroundColor=none;sketch=0;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="560" y="140" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- Row 3: Compute -->
+    <mxCell id="r3_label" value="Compute Layer" style="text;html=1;fontSize=12;fontStyle=1;align=left;fillColor=#F3E5F5;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="240" width="120" height="30" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="ecs_r" value="ECS Cluster&#xa;(Fargate)" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecs;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="200" y="230" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="api_r" value="API Service&#xa;(Node.js)" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecs_service;labelBackgroundColor=none;sketch=0;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="320" y="230" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="fe_r" value="Frontend&#xa;(Nginx)" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecs_service;labelBackgroundColor=none;sketch=0;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="440" y="230" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="as_r" value="Auto Scaling" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.auto_scaling2;labelBackgroundColor=none;sketch=0;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="560" y="230" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- Row 4: Data -->
+    <mxCell id="r4_label" value="Data Layer" style="text;html=1;fontSize=12;fontStyle=1;align=left;fillColor=#FFF3E0;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="330" width="100" height="30" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="rds_r" value="RDS&#xa;PostgreSQL" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.rds_postgresql_instance;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="200" y="320" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="redis_r" value="ElastiCache&#xa;Redis" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.elasticache_for_redis;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="320" y="320" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="s3_r" value="S3&#xa;(3 Buckets)" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="440" y="320" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="sm_r" value="Secrets&#xa;Manager" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.secrets_manager;labelBackgroundColor=none;sketch=0;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="560" y="320" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="ddb_r" value="DynamoDB&#xa;(TF Lock)" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.dynamodb;labelBackgroundColor=none;sketch=0;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="680" y="320" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- Row 5: CI/CD -->
+    <mxCell id="r5_label" value="CI/CD Layer" style="text;html=1;fontSize=12;fontStyle=1;align=left;fillColor=#E8F5E9;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="420" width="100" height="30" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="ecr_r" value="ECR&#xa;(2 Repos)" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecr;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="200" y="410" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="iam_r" value="IAM OIDC&#xa;Provider" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.identity_and_access_management;labelBackgroundColor=none;sketch=0;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="320" y="410" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="gh_r" value="GitHub&#xa;Actions" style="rounded=1;whiteSpace=wrap;fillColor=#F5F5F5;strokeColor=#333333;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="430" y="410" width="80" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- Row 6: Monitoring -->
+    <mxCell id="r6_label" value="Monitoring" style="text;html=1;fontSize=12;fontStyle=1;align=left;fillColor=#FFEBEE;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="510" width="100" height="30" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="cw_r" value="CloudWatch&#xa;Logs" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudwatch;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="200" y="500" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="alarm_r" value="CloudWatch&#xa;Alarms (9)" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudwatch_alarm;labelBackgroundColor=none;sketch=0;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="320" y="500" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="dash_r" value="CloudWatch&#xa;Dashboard" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudwatch;labelBackgroundColor=none;sketch=0;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="440" y="500" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="xray_r" value="X-Ray" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.x_ray;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="560" y="500" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="sns_r" value="SNS" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sns;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="680" y="500" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- Row 7: AI -->
+    <mxCell id="r7_label" value="AI/ML" style="text;html=1;fontSize=12;fontStyle=1;align=left;fillColor=#FFF9C4;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="600" width="100" height="30" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="bedrock_r" value="Amazon&#xa;Bedrock" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bedrock;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="200" y="590" width="50" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- Connection Edges -->
+    <!-- Edge: CloudFront -> ALB -->
+    <mxCell id="re1" value="HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;strokeColor=#1565C0;" edge="1" source="cloudfront" target="alb_r" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- Edge: CloudFront -> S3 -->
+    <mxCell id="re2" value="OAC" style="edgeStyle=orthogonalEdgeStyle;rounded=1;dashed=1;strokeColor=#E65100;" edge="1" source="cloudfront" target="s3_r" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="130" y="75"/>
+          <mxPoint x="130" y="345"/>
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <!-- Edge: ALB -> ECS -->
+    <mxCell id="re3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;strokeColor=#7B1FA2;" edge="1" source="alb_r" target="ecs_r" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="280" y="165"/>
+          <mxPoint x="280" y="255"/>
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <!-- Edge: API -> RDS -->
+    <mxCell id="re4" value="5432" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1565C0;" edge="1" source="api_r" target="rds_r" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="280" y="255"/>
+          <mxPoint x="280" y="345"/>
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <!-- Edge: API -> Redis -->
+    <mxCell id="re5" value="6379" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#C62828;" edge="1" source="api_r" target="redis_r" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- Edge: API -> Secrets Manager -->
+    <mxCell id="re6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;dashed=1;" edge="1" source="api_r" target="sm_r" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="585" y="255"/>
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <!-- Edge: API -> Bedrock -->
+    <mxCell id="re7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;dashed=1;strokeColor=#F57F17;" edge="1" source="api_r" target="bedrock_r" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="160" y="255"/>
+          <mxPoint x="160" y="615"/>
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <!-- Edge: ECS -> CloudWatch -->
+    <mxCell id="re8" value="logs" style="edgeStyle=orthogonalEdgeStyle;rounded=1;dashed=1;strokeColor=#C62828;" edge="1" source="ecs_r" target="cw_r" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- Edge: ECS -> X-Ray -->
+    <mxCell id="re9" value="traces" style="edgeStyle=orthogonalEdgeStyle;rounded=1;dashed=1;strokeColor=#C62828;" edge="1" source="api_r" target="xray_r" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="345" y="290"/>
+          <mxPoint x="585" y="290"/>
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <!-- Edge: Alarms -> SNS -->
+    <mxCell id="re10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="alarm_r" target="sns_r" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- Edge: ECR -> ECS -->
+    <mxCell id="re11" value="pull" style="edgeStyle=orthogonalEdgeStyle;rounded=1;dashed=1;strokeColor=#7B1FA2;" edge="1" source="ecr_r" target="ecs_r" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- Edge: GitHub -> ECR -->
+    <mxCell id="re12" value="push" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#388E3C;" edge="1" source="gh_r" target="ecr_r" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- Edge: GitHub -> IAM OIDC -->
+    <mxCell id="re13" value="OIDC" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#C62828;" edge="1" source="gh_r" target="iam_r" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- Edge: ACM -> CloudFront -->
+    <mxCell id="re14" style="edgeStyle=orthogonalEdgeStyle;rounded=1;dashed=1;" edge="1" source="acm1" target="cloudfront" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- Edge: ACM -> ALB -->
+    <mxCell id="re15" style="edgeStyle=orthogonalEdgeStyle;rounded=1;dashed=1;" edge="1" source="acm1" target="alb_r" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- Resource Count Summary -->
+    <mxCell id="summary" value="Total AWS Resources: VPC(1) + Subnets(4) + IGW(1) + NAT(1) + ALB(1) + ECS Cluster(1) + Services(2) + RDS(1) + Redis(1) + S3(3) + ECR(2) + CloudFront(1) + ACM(2) + Secrets Manager(1+) + DynamoDB(1) + CloudWatch(Logs+Alarms+Dashboard) + X-Ray(1) + SNS(1) + IAM(3 Roles) + Bedrock" style="text;html=1;fontSize=10;align=left;verticalAlign=middle;fillColor=#F5F5F5;rounded=1;whiteSpace=wrap;" vertex="1" parent="1">
+      <mxGeometry x="20" y="660" width="1350" height="30" as="geometry"/>
+    </mxCell>
+
+  </root>
+</mxGraphModel>

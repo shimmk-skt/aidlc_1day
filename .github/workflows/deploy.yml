@@ -1,0 +1,134 @@
+name: Deploy
+
+on:
+  push:
+    branches: ['feature/*', main]
+  create:
+    tags: ['release/*']
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ap-northeast-2
+
+jobs:
+  determine-env:
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.env.outputs.environment }}
+    steps:
+      - id: env
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/release/* ]]; then
+            echo "environment=prod" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "environment=staging" >> $GITHUB_OUTPUT
+          else
+            echo "environment=dev" >> $GITHUB_OUTPUT
+          fi
+
+  build-and-push:
+    needs: determine-env
+    runs-on: ubuntu-latest
+    environment: ${{ needs.determine-env.outputs.environment }}
+    env:
+      ENV: ${{ needs.determine-env.outputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: aws-actions/amazon-ecr-login@v2
+        id: ecr
+
+      - name: Build & push API image
+        run: |
+          cd packages/api
+          docker build -t ${{ steps.ecr.outputs.registry }}/inventrix-${{ env.ENV }}-api:${{ env.ENV }}-${{ github.sha }} .
+          docker push ${{ steps.ecr.outputs.registry }}/inventrix-${{ env.ENV }}-api:${{ env.ENV }}-${{ github.sha }}
+
+      - name: Build & push Frontend image
+        run: |
+          cd packages/frontend
+          docker build -t ${{ steps.ecr.outputs.registry }}/inventrix-${{ env.ENV }}-frontend:${{ env.ENV }}-${{ github.sha }} .
+          docker push ${{ steps.ecr.outputs.registry }}/inventrix-${{ env.ENV }}-frontend:${{ env.ENV }}-${{ github.sha }}
+
+  terraform:
+    needs: [determine-env, build-and-push]
+    runs-on: ubuntu-latest
+    environment: ${{ needs.determine-env.outputs.environment }}
+    env:
+      ENV: ${{ needs.determine-env.outputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.5'
+
+      - name: Terraform Init
+        working-directory: infra
+        run: terraform init -backend-config="key=env:${{ env.ENV }}/terraform.tfstate"
+
+      - name: Terraform Plan
+        working-directory: infra
+        run: terraform plan -var-file=environments/${{ env.ENV }}.tfvars -out=tfplan
+
+      - name: Manual Approval
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.token }}
+          approvers: ${{ secrets.APPROVERS }}
+          minimum-approvals: 1
+
+      - name: Terraform Apply
+        working-directory: infra
+        run: terraform apply tfplan
+
+  deploy-ecs:
+    needs: [determine-env, terraform]
+    runs-on: ubuntu-latest
+    environment: ${{ needs.determine-env.outputs.environment }}
+    env:
+      ENV: ${{ needs.determine-env.outputs.environment }}
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update ECS API Service
+        run: |
+          aws ecs update-service \
+            --cluster inventrix-${{ env.ENV }} \
+            --service inventrix-${{ env.ENV }}-api \
+            --force-new-deployment
+
+      - name: Update ECS Frontend Service
+        run: |
+          aws ecs update-service \
+            --cluster inventrix-${{ env.ENV }} \
+            --service inventrix-${{ env.ENV }}-frontend \
+            --force-new-deployment
+
+      - name: Wait for API stability
+        run: |
+          aws ecs wait services-stable \
+            --cluster inventrix-${{ env.ENV }} \
+            --services inventrix-${{ env.ENV }}-api
+
+      - name: Wait for Frontend stability
+        run: |
+          aws ecs wait services-stable \
+            --cluster inventrix-${{ env.ENV }} \
+            --services inventrix-${{ env.ENV }}-frontend

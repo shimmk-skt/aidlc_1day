@@ -3,7 +3,7 @@
 ## Project Information
 - **Project Type**: Brownfield
 - **Start Date**: 2026-04-08T11:17:27Z
-- **Current Stage**: INCEPTION 완료 → CONSTRUCTION PHASE (대기)
+- **Current Stage**: CONSTRUCTION PHASE - Unit 3 (Infra&DevOps) - 완료 (대기 중)
 
 ## Execution Plan Summary
 - **Total Stages to Execute**: 8 (Application Design, Units Generation, Per-Unit: FD+NFRA+NFRD+ID+CG, Build and Test)
@@ -37,3 +37,8 @@
 - [x] INCEPTION - Workflow Planning (2026-04-08T13:17:29Z)
 - [x] INCEPTION - Application Design (2026-04-08T13:21:37Z)
 - [x] INCEPTION - Units Generation (2026-04-08T13:31:51Z)
+- [x] CONSTRUCTION - Unit 3 (Infra&DevOps) - Functional Design (시작: 2026-04-08T13:50:54Z, 완료: 2026-04-08T14:20:16Z)
+- [x] CONSTRUCTION - Unit 3 (Infra&DevOps) - NFR Requirements (시작: 2026-04-08T14:20:16Z, 완료: 2026-04-08T14:25:29Z)
+- [x] CONSTRUCTION - Unit 3 (Infra&DevOps) - NFR Design (시작: 2026-04-08T14:25:29Z, 완료: 2026-04-08T14:27:40Z)
+- [x] CONSTRUCTION - Unit 3 (Infra&DevOps) - Infrastructure Design (시작: 2026-04-08T14:27:40Z, 완료: 2026-04-08T14:33:48Z)
+- [x] CONSTRUCTION - Unit 3 (Infra&DevOps) - Code Generation (시작: 2026-04-08T14:33:48Z, 완료: 2026-04-08T14:45:05Z)
