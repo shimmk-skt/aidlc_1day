@@ -10,7 +10,7 @@ import type { AuthUser, TokenPair } from '../types/index.js';
 const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
 
 const generateTokenPair = async (user: AuthUser): Promise<TokenPair> => {
-  const accessToken = jwt.sign({ id: user.id, email: user.email, role: user.role }, env.jwtSecret, { expiresIn: env.jwtAccessExpiresIn });
+  const accessToken = jwt.sign({ id: user.id, email: user.email, role: user.role }, env.jwtSecret, { expiresIn: env.jwtAccessExpiresIn } as any);
   const refreshToken = crypto.randomBytes(40).toString('hex');
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   await refreshTokenRepository.create(user.id, refreshToken, expiresAt);

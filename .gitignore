@@ -5,3 +5,7 @@ dist
 *.db
 .DS_Store
 *.pem
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfplan

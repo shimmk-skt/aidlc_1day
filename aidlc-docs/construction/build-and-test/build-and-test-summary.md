@@ -1,54 +1,66 @@
-# Build and Test Summary — Unit 3: Infra & DevOps
+# Build and Test Summary — 전체 통합 (Unit 1~3)
 
 ## Build Status
-- **Terraform**: `terraform validate` + `terraform plan` (3 환경)
-- **Docker**: API + Frontend 이미지 빌드
-- **CI/CD**: GitHub Actions workflow 구문 검증
+
+| Unit | 빌드 대상 | 명령어 | 상태 |
+|---|---|---|---|
+| Unit 1 (Backend) | TypeScript → dist/ | `pnpm --filter api run build` | 실행 대기 |
+| Unit 2 (Frontend) | Vite → dist/ | `pnpm --filter frontend run build` | 실행 대기 |
+| Unit 3 (Infra) | Terraform validate | `cd infra && terraform validate` | 실행 대기 |
+| Docker (API) | node:20-alpine | `docker build packages/api/` | 실행 대기 |
+| Docker (Frontend) | nginx:alpine | `docker build packages/frontend/` | 실행 대기 |
 
 ## Test Execution Summary
 
-### Unit Tests (Terraform Validation)
-| 테스트 | 상태 | 비고 |
+### Unit Tests
+| 대상 | 도구 | 상태 |
 |---|---|---|
-| terraform fmt -check | 실행 대기 | 코드 포맷 검증 |
-| terraform validate | 실행 대기 | 구문 검증 |
-| terraform plan (dev) | 실행 대기 | dev 환경 plan |
-| terraform plan (staging) | 실행 대기 | staging 환경 plan |
-| terraform plan (prod) | 실행 대기 | prod 환경 plan |
-| Dockerfile lint | 실행 대기 | Hadolint |
-| Docker build (API) | 실행 대기 | 이미지 빌드 |
-| Docker build (Frontend) | 실행 대기 | 이미지 빌드 |
-| Workflow lint | 실행 대기 | actionlint |
+| Backend Services | Jest + Supertest | 실행 대기 |
+| Frontend Components | Vitest | 실행 대기 |
+| Terraform | fmt + validate | 실행 대기 |
+| Dockerfile | Hadolint | 실행 대기 |
+| GitHub Actions | actionlint | 실행 대기 |
 
-### Integration Tests
-| 시나리오 | 상태 | 비고 |
-|---|---|---|
-| Terraform 모듈 간 의존성 | 실행 대기 | output/variable 체이닝 |
-| Docker Compose 통합 | 실행 대기 | API + Frontend 동시 실행 |
-| Security Group 규칙 검증 | 실행 대기 | plan JSON 분석 |
+### Integration Tests (4 시나리오)
+| 시나리오 | 상태 |
+|---|---|
+| Frontend → Backend API 통합 | 실행 대기 |
+| Terraform 모듈 간 의존성 | 실행 대기 |
+| CI/CD 파이프라인 검증 | 실행 대기 |
+| Security Group 규칙 검증 | 실행 대기 |
 
 ### Security Tests
-| 테스트 | 상태 | 비고 |
+| 테스트 | 도구 | 상태 |
 |---|---|---|
-| tfsec (Terraform) | 실행 대기 | IaC 보안 스캔 |
-| Trivy (Docker) | 실행 대기 | 이미지 취약점 |
-| IAM 최소 권한 | 실행 대기 | policy 검토 |
-| Workflow 보안 | 실행 대기 | OIDC, permissions |
+| 의존성 취약점 | pnpm audit | 실행 대기 |
+| IaC 보안 | tfsec | 실행 대기 |
+| Docker 이미지 | Trivy | 실행 대기 |
+| Frontend 보안 헤더 | 수동 검토 | 실행 대기 |
+| Backend 보안 | 수동 검토 | 실행 대기 |
+| IAM 최소 권한 | Terraform plan | 실행 대기 |
 
-## 테스트 실행 순서
-1. `terraform fmt -check -recursive` + `terraform validate`
-2. `terraform plan` (dev/staging/prod)
-3. Docker build (API + Frontend)
-4. Docker Compose 통합 테스트
-5. tfsec + Trivy 보안 스캔
+### Performance Tests
+| 테스트 | 도구 | 목표 | 상태 |
+|---|---|---|---|
+| API 부하 | k6 | p95 < 200ms | 실행 대기 |
+| Frontend 성능 | Lighthouse | Score > 90 | 실행 대기 |
 
 ## 생성된 파일
 1. ✅ build-instructions.md
 2. ✅ unit-test-instructions.md
 3. ✅ integration-test-instructions.md
 4. ✅ security-test-instructions.md
-5. ✅ build-and-test-summary.md
+5. ✅ performance-test-instructions.md
+6. ✅ build-and-test-summary.md
+
+## 실행 순서
+1. `pnpm install` → `pnpm --filter api run build` → `pnpm --filter frontend run build`
+2. `pnpm --filter api run test` → `pnpm --filter frontend run test`
+3. `cd infra && terraform validate && terraform fmt -check`
+4. Docker build (API + Frontend)
+5. `docker compose up` → 통합 테스트
+6. 보안 스캔 (pnpm audit, tfsec, trivy)
+7. 성능 테스트 (k6, Lighthouse)
 
 ## Next Steps
-- 위 테스트를 순서대로 실행
-- 모든 테스트 통과 후 Operations 단계로 진행 가능
+- 모든 테스트 통과 후 → Operations Phase (배포 계획)

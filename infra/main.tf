@@ -7,12 +7,12 @@ module "networking" {
 }
 
 module "database" {
-  source           = "./modules/database"
-  environment      = var.environment
-  project_name     = var.project_name
-  instance_class   = var.rds_instance_class
-  multi_az         = var.rds_multi_az
-  subnet_ids       = module.networking.private_subnet_ids
+  source            = "./modules/database"
+  environment       = var.environment
+  project_name      = var.project_name
+  instance_class    = var.rds_instance_class
+  multi_az          = var.rds_multi_az
+  subnet_ids        = module.networking.private_subnet_ids
   security_group_id = module.networking.rds_sg_id
 }
 
@@ -33,38 +33,38 @@ module "storage" {
 }
 
 module "compute" {
-  source              = "./modules/compute"
-  environment         = var.environment
-  project_name        = var.project_name
-  vpc_id              = module.networking.vpc_id
-  public_subnet_ids   = module.networking.public_subnet_ids
-  private_subnet_ids  = module.networking.private_subnet_ids
-  alb_sg_id           = module.networking.alb_sg_id
-  ecs_sg_id           = module.networking.ecs_sg_id
-  api_cpu             = var.ecs_api_cpu
-  api_memory          = var.ecs_api_memory
-  api_desired_count   = var.ecs_api_desired_count
-  api_min_count       = var.ecs_api_min_count
-  api_max_count       = var.ecs_api_max_count
-  fe_cpu              = var.ecs_fe_cpu
-  fe_memory           = var.ecs_fe_memory
-  fe_desired_count    = var.ecs_fe_desired_count
-  ecr_api_url         = module.storage.ecr_api_url
-  ecr_frontend_url    = module.storage.ecr_frontend_url
-  rds_endpoint        = module.database.rds_endpoint
-  redis_endpoint      = module.cache.redis_endpoint
-  db_secret_arn       = module.database.db_secret_arn
-  log_retention_days  = var.log_retention_days
-  aws_region          = var.aws_region
+  source             = "./modules/compute"
+  environment        = var.environment
+  project_name       = var.project_name
+  vpc_id             = module.networking.vpc_id
+  public_subnet_ids  = module.networking.public_subnet_ids
+  private_subnet_ids = module.networking.private_subnet_ids
+  alb_sg_id          = module.networking.alb_sg_id
+  ecs_sg_id          = module.networking.ecs_sg_id
+  api_cpu            = var.ecs_api_cpu
+  api_memory         = var.ecs_api_memory
+  api_desired_count  = var.ecs_api_desired_count
+  api_min_count      = var.ecs_api_min_count
+  api_max_count      = var.ecs_api_max_count
+  fe_cpu             = var.ecs_fe_cpu
+  fe_memory          = var.ecs_fe_memory
+  fe_desired_count   = var.ecs_fe_desired_count
+  ecr_api_url        = module.storage.ecr_api_url
+  ecr_frontend_url   = module.storage.ecr_frontend_url
+  rds_endpoint       = module.database.rds_endpoint
+  redis_endpoint     = module.cache.redis_endpoint
+  db_secret_arn      = module.database.db_secret_arn
+  log_retention_days = var.log_retention_days
+  aws_region         = var.aws_region
 }
 
 module "cdn" {
-  source            = "./modules/cdn"
-  environment       = var.environment
-  project_name      = var.project_name
-  alb_dns_name      = module.compute.alb_dns_name
-  assets_bucket     = module.storage.assets_bucket_domain
-  assets_bucket_id  = module.storage.assets_bucket_id
+  source           = "./modules/cdn"
+  environment      = var.environment
+  project_name     = var.project_name
+  alb_dns_name     = module.compute.alb_dns_name
+  assets_bucket    = module.storage.assets_bucket_domain
+  assets_bucket_id = module.storage.assets_bucket_id
 
   providers = {
     aws           = aws

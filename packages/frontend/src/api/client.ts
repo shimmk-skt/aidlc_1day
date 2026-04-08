@@ -35,5 +35,6 @@ export async function apiClient<T>(url: string, options: RequestInit = {}): Prom
     const body = await res.json().catch(() => ({}));
     throw Object.assign(new Error(body.message || `HTTP ${res.status}`), { status: res.status, body });
   }
-  return res.json();
+  const json = await res.json();
+  return json.data !== undefined ? json.data : json;
 }

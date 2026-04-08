@@ -1,70 +1,57 @@
-# Unit Test Instructions — Unit 3: Infra & DevOps
+# Unit Test Instructions — 전체 통합 (Unit 1~3)
 
-## Terraform Validation
+## Unit 1: Backend Tests
 
-### 1. Terraform Format Check
+### Jest 테스트 실행
+```bash
+pnpm --filter api run test
+```
+
+### 예상 결과
+- `tests/services/order.service.test.ts` — 주문 서비스 로직
+- `tests/services/errors.test.ts` — 에러 핸들링
+
+## Unit 2: Frontend Tests
+
+### Vitest 테스트 실행
+```bash
+pnpm --filter frontend run test
+```
+
+### 예상 결과
+- 컴포넌트 렌더링 테스트
+- 라우팅 테스트
+
+## Unit 3: Terraform Validation
+
+### Terraform 검증
 ```bash
 cd infra
 terraform fmt -check -recursive
-```
-모든 `.tf` 파일이 표준 포맷인지 확인. 실패시 `terraform fmt -recursive`로 자동 수정.
-
-### 2. Terraform Validate
-```bash
-cd infra
 terraform init -backend=false
 terraform validate
 ```
-구문 오류, 잘못된 참조, 누락된 변수 등을 검증.
 
-### 3. 환경별 Plan 검증
+### Dockerfile Lint
 ```bash
-# 각 환경별 plan이 오류 없이 생성되는지 확인
-terraform plan -var-file=environments/dev.tfvars -detailed-exitcode
-terraform plan -var-file=environments/staging.tfvars -detailed-exitcode
-terraform plan -var-file=environments/prod.tfvars -detailed-exitcode
-```
-
-## Docker Validation
-
-### 4. Dockerfile Lint (Hadolint)
-```bash
-# Hadolint 설치 (선택)
-# brew install hadolint
-
+# brew install hadolint (선택)
 hadolint packages/api/Dockerfile
 hadolint packages/frontend/Dockerfile
 ```
 
-### 5. Docker Build 테스트
+### GitHub Actions Workflow Lint
 ```bash
-docker build -t inventrix-api:test packages/api/
-docker build -t inventrix-frontend:test packages/frontend/
-```
-빌드가 성공적으로 완료되는지 확인.
-
-### 6. Docker 이미지 크기 확인
-```bash
-docker images | grep inventrix
-```
-- API: < 200MB 예상 (node:20-alpine)
-- Frontend: < 50MB 예상 (nginx:alpine)
-
-## GitHub Actions Validation
-
-### 7. Workflow 구문 검증
-```bash
-# actionlint 설치 (선택)
-# brew install actionlint
-
+# brew install actionlint (선택)
 actionlint .github/workflows/ci.yml
 actionlint .github/workflows/deploy.yml
 actionlint .github/workflows/terraform-plan.yml
 ```
 
-## 예상 결과
-- Terraform fmt: 0 changes
-- Terraform validate: Success
-- Terraform plan: 각 환경별 리소스 생성 계획 출력
-- Docker build: 2개 이미지 성공
-- Workflow lint: 0 errors
+## Docker 이미지 빌드 테스트
+```bash
+docker build -t inventrix-api:test packages/api/
+docker build -t inventrix-frontend:test packages/frontend/
+docker images | grep inventrix
+```
+- API: < 200MB
+- Frontend: < 50MB

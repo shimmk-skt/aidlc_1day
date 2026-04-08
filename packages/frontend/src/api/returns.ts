@@ -1,4 +1,3 @@
-import { apiClient } from './client';
 import type { Return, ReturnReason } from '../types/returns';
 
 export const createReturn = (orderId: number, reason: ReturnReason, description?: string, photos?: File[]) => {

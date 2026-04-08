@@ -16,7 +16,11 @@ export default function Storefront() {
   useEffect(() => {
     fetch('/api/products')
       .then(res => res.json())
-      .then(setProducts);
+      .then(json => {
+        const list = json.data ?? json;
+        setProducts(Array.isArray(list) ? list : []);
+      })
+      .catch(() => setProducts([]));
   }, []);
 
   return (

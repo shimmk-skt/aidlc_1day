@@ -48,7 +48,11 @@ resource "aws_s3_bucket_versioning" "assets" {
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "assets" {
   bucket = aws_s3_bucket.assets.id
-  rule { apply_server_side_encryption_by_default { sse_algorithm = "AES256" } }
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "assets" {
@@ -69,11 +73,16 @@ resource "aws_s3_bucket_lifecycle_configuration" "alb_logs" {
   rule {
     id     = "expire-logs"
     status = "Enabled"
+    filter {}
     expiration { days = 90 }
   }
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "alb_logs" {
   bucket = aws_s3_bucket.alb_logs.id
-  rule { apply_server_side_encryption_by_default { sse_algorithm = "AES256" } }
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
 }

@@ -116,7 +116,7 @@ resource "aws_cloudwatch_dashboard" "main" {
       {
         type = "metric", x = 0, y = 0, width = 12, height = 6
         properties = {
-          title   = "ECS API CPU/Memory"
+          title = "ECS API CPU/Memory"
           metrics = [
             ["AWS/ECS", "CPUUtilization", "ClusterName", var.ecs_cluster_name, "ServiceName", var.ecs_api_service],
             ["AWS/ECS", "MemoryUtilization", "ClusterName", var.ecs_cluster_name, "ServiceName", var.ecs_api_service]
@@ -127,7 +127,7 @@ resource "aws_cloudwatch_dashboard" "main" {
       {
         type = "metric", x = 12, y = 0, width = 12, height = 6
         properties = {
-          title   = "ALB Requests & Latency"
+          title = "ALB Requests & Latency"
           metrics = [
             ["AWS/ApplicationELB", "RequestCount", "LoadBalancer", var.alb_arn_suffix],
             ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", var.alb_arn_suffix]
@@ -138,7 +138,7 @@ resource "aws_cloudwatch_dashboard" "main" {
       {
         type = "metric", x = 0, y = 6, width = 12, height = 6
         properties = {
-          title   = "RDS CPU & Connections"
+          title = "RDS CPU & Connections"
           metrics = [
             ["AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", var.rds_instance_id],
             ["AWS/RDS", "DatabaseConnections", "DBInstanceIdentifier", var.rds_instance_id]

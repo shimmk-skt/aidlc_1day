@@ -10,7 +10,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 declare global { interface Window { TossPayments: any; } }
 
 export default function Checkout() {
-  const { items, totalAmount, clearCart } = useCart();
+  const { items, totalAmount } = useCart();
   const { data: addresses, isLoading } = useAddresses();
   const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);

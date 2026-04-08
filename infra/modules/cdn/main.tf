@@ -39,14 +39,14 @@ resource "aws_cloudfront_distribution" "main" {
   }
 
   ordered_cache_behavior {
-    path_pattern     = "/assets/*"
-    target_origin_id = "s3-assets"
-    allowed_methods  = ["GET", "HEAD"]
-    cached_methods   = ["GET", "HEAD"]
+    path_pattern           = "/assets/*"
+    target_origin_id       = "s3-assets"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
     viewer_protocol_policy = "redirect-to-https"
-    min_ttl     = 0
-    default_ttl = 86400
-    max_ttl     = 86400
+    min_ttl                = 0
+    default_ttl            = 86400
+    max_ttl                = 86400
     forwarded_values {
       query_string = false
       cookies { forward = "none" }
@@ -58,9 +58,9 @@ resource "aws_cloudfront_distribution" "main" {
     allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods         = ["GET", "HEAD"]
     viewer_protocol_policy = "redirect-to-https"
-    min_ttl     = 0
-    default_ttl = 0
-    max_ttl     = 0
+    min_ttl                = 0
+    default_ttl            = 0
+    max_ttl                = 0
     forwarded_values {
       query_string = true
       headers      = ["*"]

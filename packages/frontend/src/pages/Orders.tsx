@@ -19,7 +19,7 @@ export default function Orders() {
       headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(res => res.json())
-      .then(setOrders);
+      .then(json => setOrders(json.data || json));
   }, [token]);
 
   const statusColors: Record<string, string> = {

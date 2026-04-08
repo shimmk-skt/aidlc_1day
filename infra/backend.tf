@@ -4,7 +4,7 @@ terraform {
   backend "s3" {
     bucket         = "inventrix-terraform-state"
     key            = "terraform.tfstate"
-    region         = "ap-northeast-2"
+    region         = "us-east-1"
     dynamodb_table = "inventrix-terraform-lock"
     encrypt        = true
   }

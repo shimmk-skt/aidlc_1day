@@ -25,7 +25,7 @@ export default function AdminOrders() {
       headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(res => res.json())
-      .then(setOrders);
+      .then(json => setOrders(json.data || json));
   };
 
   const updateStatus = async (id: number, status: string) => {

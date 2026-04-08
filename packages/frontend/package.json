@@ -8,15 +8,25 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.96.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.21.1"
+    "react-router-dom": "^6.21.1",
+    "recharts": "^3.8.1"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/react": "^18.2.47",
     "@types/react-dom": "^18.2.18",
     "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.27",
+    "jsdom": "^29.0.2",
+    "postcss": "^8.5.9",
+    "tailwindcss": "^4.2.2",
     "typescript": "^5.3.3",
-    "vite": "^5.0.10"
+    "vite": "^5.0.10",
+    "vitest": "^2.1.9"
   }
 }

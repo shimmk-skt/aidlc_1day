@@ -4,7 +4,6 @@ import { createAddress, deleteAddress, setDefaultAddress } from '../api/addresse
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../context/ToastContext';
 import LoadingSpinner from '../components/LoadingSpinner';
-import type { Address } from '../types/address';
 import { validatePhone, validateRequired } from '../utils/validation';
 
 declare global { interface Window { daum: any; } }
@@ -58,7 +57,7 @@ export default function AddressList() {
         </div>
       )}
       <div className="space-y-3">
-        {addresses?.map(a => (
+        {addresses?.map((a: any) => (
           <div key={a.id} className="bg-white rounded-lg border p-4" data-testid={`address-card-${a.id}`}>
             <div className="flex items-center justify-between">
               <p className="font-medium">{a.name} {a.isDefault && <span className="text-xs bg-primary-100 text-primary-600 px-1.5 py-0.5 rounded ml-1">기본</span>}</p>

@@ -22,7 +22,7 @@ export default function ProductDetail() {
   useEffect(() => {
     fetch(`/api/products/${id}`)
       .then(res => res.json())
-      .then(setProduct);
+      .then(json => setProduct(json.data || json));
   }, [id]);
 
   const handleOrder = async () => {

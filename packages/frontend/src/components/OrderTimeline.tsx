@@ -1,4 +1,4 @@
-import { ORDER_STATUS_LABEL, ORDER_STATUS_COLOR } from '../utils/constants';
+import { ORDER_STATUS_LABEL } from '../utils/constants';
 import { formatDateTime } from '../utils/format';
 import type { StatusHistoryEntry, OrderStatus } from '../types/order';
 

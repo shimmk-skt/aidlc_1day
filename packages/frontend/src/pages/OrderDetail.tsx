@@ -3,7 +3,7 @@ import { useOrder } from '../hooks/queries/useOrders';
 import { cancelOrder, reorder } from '../api/orders';
 import { useToast } from '../context/ToastContext';
 import { useQueryClient } from '@tanstack/react-query';
-import { formatCurrency, formatDateTime } from '../utils/format';
+import { formatCurrency } from '../utils/format';
 import Badge from '../components/Badge';
 import OrderTimeline from '../components/OrderTimeline';
 import LoadingSpinner from '../components/LoadingSpinner';

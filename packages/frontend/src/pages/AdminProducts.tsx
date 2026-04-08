@@ -24,7 +24,7 @@ export default function AdminProducts() {
   const loadProducts = () => {
     fetch('/api/products')
       .then(res => res.json())
-      .then(setProducts);
+      .then(json => setProducts(json.data || json));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

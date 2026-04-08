@@ -13,7 +13,7 @@ resource "aws_ecs_cluster" "main" {
 resource "aws_iam_role" "ecs_execution" {
   name = "${var.project_name}-${var.environment}-ecs-execution"
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"
+    Version   = "2012-10-17"
     Statement = [{ Action = "sts:AssumeRole", Effect = "Allow", Principal = { Service = "ecs-tasks.amazonaws.com" } }]
   })
 }
@@ -39,7 +39,7 @@ resource "aws_iam_role_policy" "ecs_execution_secrets" {
 resource "aws_iam_role" "ecs_task" {
   name = "${var.project_name}-${var.environment}-ecs-task"
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"
+    Version   = "2012-10-17"
     Statement = [{ Action = "sts:AssumeRole", Effect = "Allow", Principal = { Service = "ecs-tasks.amazonaws.com" } }]
   })
 }
@@ -80,8 +80,8 @@ resource "aws_ecs_task_definition" "api" {
   task_role_arn            = aws_iam_role.ecs_task.arn
 
   container_definitions = jsonencode([{
-    name  = "api"
-    image = "${var.ecr_api_url}:latest"
+    name         = "api"
+    image        = "${var.ecr_api_url}:latest"
     portMappings = [{ containerPort = 3001, protocol = "tcp" }]
     environment = [
       { name = "NODE_ENV", value = var.environment },
@@ -118,8 +118,8 @@ resource "aws_ecs_task_definition" "frontend" {
   execution_role_arn       = aws_iam_role.ecs_execution.arn
 
   container_definitions = jsonencode([{
-    name  = "frontend"
-    image = "${var.ecr_frontend_url}:latest"
+    name         = "frontend"
+    image        = "${var.ecr_frontend_url}:latest"
     portMappings = [{ containerPort = 80, protocol = "tcp" }]
     logConfiguration = {
       logDriver = "awslogs"
@@ -156,12 +156,22 @@ resource "aws_lb_listener" "http" {
   protocol          = "HTTP"
 
   default_action {
-    type = "redirect"
-    redirect {
-      port        = "443"
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
-    }
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.frontend.arn
+  }
+}
+
+resource "aws_lb_listener_rule" "api" {
+  listener_arn = aws_lb_listener.http.arn
+  priority     = 100
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.api.arn
+  }
+
+  condition {
+    path_pattern { values = ["/api/*", "/health"] }
   }
 }
 

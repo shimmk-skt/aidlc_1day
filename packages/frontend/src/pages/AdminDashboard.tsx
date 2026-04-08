@@ -23,7 +23,7 @@ export default function AdminDashboard() {
       headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(res => res.json())
-      .then(setAnalytics);
+      .then(json => setAnalytics(json.data || json));
   }, [token]);
 
   if (!analytics) return <div>Loading...</div>;

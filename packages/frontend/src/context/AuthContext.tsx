@@ -10,6 +10,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   token: string | null;
+  isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
   logout: () => void;
@@ -20,10 +21,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) setUser(JSON.parse(storedUser));
+    try {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser && storedUser !== 'undefined') setUser(JSON.parse(storedUser));
+    } catch { localStorage.removeItem('user'); localStorage.removeItem('token'); }
+    setIsLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -33,10 +38,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       body: JSON.stringify({ email, password })
     });
     if (!res.ok) throw new Error('Login failed');
-    const data = await res.json();
+    const { data } = await res.json();
     setUser(data.user);
-    setToken(data.token);
-    localStorage.setItem('token', data.token);
+    setToken(data.accessToken);
+    localStorage.setItem('token', data.accessToken);
     localStorage.setItem('user', JSON.stringify(data.user));
   };
 
@@ -47,10 +52,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       body: JSON.stringify({ email, password, name })
     });
     if (!res.ok) throw new Error('Registration failed');
-    const data = await res.json();
+    const { data } = await res.json();
     setUser(data.user);
-    setToken(data.token);
-    localStorage.setItem('token', data.token);
+    setToken(data.accessToken);
+    localStorage.setItem('token', data.accessToken);
     localStorage.setItem('user', JSON.stringify(data.user));
   };
 
@@ -62,7 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, logout }}>
+    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

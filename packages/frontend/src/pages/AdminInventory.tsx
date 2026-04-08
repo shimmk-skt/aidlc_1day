@@ -18,7 +18,7 @@ export default function AdminInventory() {
       headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(res => res.json())
-      .then(setInventory);
+      .then(json => setInventory(json.data || json));
   }, [token]);
 
   const statusColors: Record<string, string> = {

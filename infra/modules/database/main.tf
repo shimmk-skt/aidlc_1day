@@ -38,10 +38,10 @@ resource "aws_secretsmanager_secret_version" "db" {
 }
 
 resource "aws_db_instance" "main" {
-  identifier     = "${var.project_name}-${var.environment}"
-  engine         = "postgres"
-  engine_version = "15"
-  instance_class = var.instance_class
+  identifier            = "${var.project_name}-${var.environment}"
+  engine                = "postgres"
+  engine_version        = "15"
+  instance_class        = var.instance_class
   allocated_storage     = 20
   max_allocated_storage = 100
 
@@ -53,9 +53,9 @@ resource "aws_db_instance" "main" {
   vpc_security_group_ids = [var.security_group_id]
   parameter_group_name   = aws_db_parameter_group.main.name
 
-  multi_az            = var.multi_az
-  storage_encrypted   = true
-  skip_final_snapshot = var.environment != "prod"
+  multi_az                  = var.multi_az
+  storage_encrypted         = true
+  skip_final_snapshot       = var.environment != "prod"
   final_snapshot_identifier = var.environment == "prod" ? "${var.project_name}-${var.environment}-final" : null
 
   backup_retention_period = 7
