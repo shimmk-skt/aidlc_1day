@@ -1,0 +1,12 @@
+node_modules
+dist
+.git
+.gitignore
+*.md
+.env*
+.vscode
+aidlc-docs
+research-output
+infra
+.github
+.kiro

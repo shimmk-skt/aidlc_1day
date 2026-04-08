@@ -3,7 +3,7 @@
 ## Project Information
 - **Project Type**: Brownfield
 - **Start Date**: 2026-04-08T11:17:27Z
-- **Current Stage**: CONSTRUCTION PHASE - Unit 1 (Backend) 완료, Frontend (FE) Build and Test 대기
+- **Current Stage**: CONSTRUCTION PHASE - Unit 1 (Backend) 완료, Unit 2 (Frontend) 완료, Unit 3 (Infra&DevOps) 완료
 
 ## Execution Plan Summary
 - **Total Stages to Execute**: 8 (Application Design, Units Generation, Per-Unit: FD+NFRA+NFRD+ID+CG, Build and Test)
@@ -42,3 +42,11 @@
 - [x] CONSTRUCTION - Frontend (FE) - NFR Design (2026-04-08T14:19:18Z — 완료)
 - [x] CONSTRUCTION - Frontend (FE) - Infrastructure Design (2026-04-08T14:25:27Z — 완료)
 - [x] CONSTRUCTION - Frontend (FE) - Code Generation (2026-04-08T14:29:54Z — 완료)
+- [x] CONSTRUCTION - Unit 1 (Backend) - Functional Design (완료)
+- [x] CONSTRUCTION - Unit 1 (Backend) - Code Generation Phase 1~4 (완료)
+- [x] CONSTRUCTION - Unit 3 (Infra&DevOps) - Functional Design (시작: 2026-04-08T13:50:54Z, 완료: 2026-04-08T14:20:16Z)
+- [x] CONSTRUCTION - Unit 3 (Infra&DevOps) - NFR Requirements (시작: 2026-04-08T14:20:16Z, 완료: 2026-04-08T14:25:29Z)
+- [x] CONSTRUCTION - Unit 3 (Infra&DevOps) - NFR Design (시작: 2026-04-08T14:25:29Z, 완료: 2026-04-08T14:27:40Z)
+- [x] CONSTRUCTION - Unit 3 (Infra&DevOps) - Infrastructure Design (시작: 2026-04-08T14:27:40Z, 완료: 2026-04-08T14:33:48Z)
+- [x] CONSTRUCTION - Unit 3 (Infra&DevOps) - Code Generation (시작: 2026-04-08T14:33:48Z, 완료: 2026-04-08T14:45:05Z)
+- [x] CONSTRUCTION - Unit 3 (Infra&DevOps) - Build & Test (완료: 2026-04-08T14:50:02Z)

@@ -1,0 +1,11 @@
+environment         = "prod"
+vpc_cidr            = "10.2.0.0/16"
+ecs_api_cpu         = 1024
+ecs_api_memory      = 2048
+ecs_api_desired_count = 2
+ecs_api_min_count   = 2
+ecs_api_max_count   = 10
+rds_instance_class  = "db.t3.medium"
+rds_multi_az        = true
+redis_node_type     = "cache.t3.small"
+log_retention_days  = 90

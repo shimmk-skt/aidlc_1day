@@ -1,0 +1,178 @@
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+
+    <!-- Title -->
+    <mxCell id="title" value="Inventrix - CI/CD DevOps Flow (GitHub Actions)" style="text;html=1;fontSize=18;fontStyle=1;align=center;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
+      <mxGeometry x="350" y="10" width="500" height="30" as="geometry"/>
+    </mxCell>
+
+    <!-- Developer -->
+    <mxCell id="dev" value="Developer" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.user;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="40" y="120" width="60" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- GitHub -->
+    <mxCell id="github" value="GitHub&#xa;Repository" style="rounded=1;whiteSpace=wrap;fillColor=#F5F5F5;strokeColor=#333333;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="170" y="110" width="120" height="80" as="geometry"/>
+    </mxCell>
+
+    <!-- CI Pipeline -->
+    <mxCell id="ci_group" value="CI Pipeline (GitHub Actions)" style="swimlane;startSize=28;fillColor=#E3F2FD;strokeColor=#1565C0;fontStyle=1;fontSize=11;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="40" y="250" width="1300" height="160" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="checkout" value="Checkout&#xa;Code" style="rounded=1;whiteSpace=wrap;fillColor=#BBDEFB;strokeColor=#1565C0;fontSize=10;" vertex="1" parent="ci_group">
+      <mxGeometry x="20" y="45" width="100" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="lint" value="Lint&#xa;(ESLint)" style="rounded=1;whiteSpace=wrap;fillColor=#BBDEFB;strokeColor=#1565C0;fontSize=10;" vertex="1" parent="ci_group">
+      <mxGeometry x="150" y="45" width="100" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="test" value="Test&#xa;(Jest)" style="rounded=1;whiteSpace=wrap;fillColor=#BBDEFB;strokeColor=#1565C0;fontSize=10;" vertex="1" parent="ci_group">
+      <mxGeometry x="280" y="45" width="100" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="build" value="Build&#xa;(TypeScript)" style="rounded=1;whiteSpace=wrap;fillColor=#BBDEFB;strokeColor=#1565C0;fontSize=10;" vertex="1" parent="ci_group">
+      <mxGeometry x="410" y="45" width="100" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="audit" value="npm audit&#xa;(Security)" style="rounded=1;whiteSpace=wrap;fillColor=#FFCDD2;strokeColor=#C62828;fontSize=10;" vertex="1" parent="ci_group">
+      <mxGeometry x="540" y="45" width="100" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="docker_build" value="Docker&#xa;Build" style="rounded=1;whiteSpace=wrap;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=10;" vertex="1" parent="ci_group">
+      <mxGeometry x="670" y="45" width="100" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="ecr_push" value="ECR&#xa;Push" style="rounded=1;whiteSpace=wrap;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=10;" vertex="1" parent="ci_group">
+      <mxGeometry x="800" y="45" width="100" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="ecr_scan" value="ECR Scan&#xa;(Vuln Check)" style="rounded=1;whiteSpace=wrap;fillColor=#FFCDD2;strokeColor=#C62828;fontSize=10;" vertex="1" parent="ci_group">
+      <mxGeometry x="930" y="45" width="100" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="tf_plan" value="Terraform&#xa;Plan" style="rounded=1;whiteSpace=wrap;fillColor=#C8E6C9;strokeColor=#388E3C;fontSize=10;" vertex="1" parent="ci_group">
+      <mxGeometry x="1060" y="45" width="100" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- CI Edges -->
+    <mxCell id="ce1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="checkout" target="lint" parent="ci_group">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="ce2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="lint" target="test" parent="ci_group">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="ce3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="test" target="build" parent="ci_group">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="ce4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="build" target="audit" parent="ci_group">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="ce5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="audit" target="docker_build" parent="ci_group">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="ce6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="docker_build" target="ecr_push" parent="ci_group">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="ce7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="ecr_push" target="ecr_scan" parent="ci_group">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="ce8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="ecr_scan" target="tf_plan" parent="ci_group">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- CD Pipeline -->
+    <mxCell id="cd_group" value="CD Pipeline (GitHub Actions)" style="swimlane;startSize=28;fillColor=#E8F5E9;strokeColor=#388E3C;fontStyle=1;fontSize=11;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="40" y="460" width="1300" height="160" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="approval" value="Manual&#xa;Approval" style="rhombus;whiteSpace=wrap;fillColor=#FFF9C4;strokeColor=#F57F17;fontStyle=1;fontSize=10;" vertex="1" parent="cd_group">
+      <mxGeometry x="20" y="40" width="100" height="80" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="tf_apply" value="Terraform&#xa;Apply" style="rounded=1;whiteSpace=wrap;fillColor=#C8E6C9;strokeColor=#388E3C;fontSize=10;" vertex="1" parent="cd_group">
+      <mxGeometry x="180" y="50" width="100" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="ecs_update" value="ECS Service&#xa;Update" style="rounded=1;whiteSpace=wrap;fillColor=#C8E6C9;strokeColor=#388E3C;fontSize=10;" vertex="1" parent="cd_group">
+      <mxGeometry x="340" y="50" width="100" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="health" value="Health Check&#xa;Wait" style="rounded=1;whiteSpace=wrap;fillColor=#C8E6C9;strokeColor=#388E3C;fontSize=10;" vertex="1" parent="cd_group">
+      <mxGeometry x="500" y="50" width="100" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="done" value="Deploy&#xa;Complete" style="rounded=1;whiteSpace=wrap;fillColor=#A5D6A7;strokeColor=#2E7D32;fontStyle=1;fontSize=10;" vertex="1" parent="cd_group">
+      <mxGeometry x="660" y="50" width="100" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- CD Edges -->
+    <mxCell id="de1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="approval" target="tf_apply" parent="cd_group">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="de2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="tf_apply" target="ecs_update" parent="cd_group">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="de3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="ecs_update" target="health" parent="cd_group">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="de4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="health" target="done" parent="cd_group">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- Trigger Labels -->
+    <mxCell id="trigger_box" value="Trigger Rules" style="swimlane;startSize=25;fillColor=#FFF3E0;strokeColor=#E65100;fontSize=11;fontStyle=1;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="40" y="670" width="500" height="180" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="t1" value="feature/* push  &#8594;  dev 환경 배포" style="text;html=1;fontSize=11;align=left;verticalAlign=middle;" vertex="1" parent="trigger_box">
+      <mxGeometry x="20" y="35" width="460" height="30" as="geometry"/>
+    </mxCell>
+    <mxCell id="t2" value="main push  &#8594;  staging 환경 배포" style="text;html=1;fontSize=11;align=left;verticalAlign=middle;" vertex="1" parent="trigger_box">
+      <mxGeometry x="20" y="70" width="460" height="30" as="geometry"/>
+    </mxCell>
+    <mxCell id="t3" value="release/* tag  &#8594;  prod 환경 배포" style="text;html=1;fontSize=11;align=left;verticalAlign=middle;" vertex="1" parent="trigger_box">
+      <mxGeometry x="20" y="105" width="460" height="30" as="geometry"/>
+    </mxCell>
+    <mxCell id="t4" value="PR (infra/ changes)  &#8594;  Terraform Plan only (PR comment)" style="text;html=1;fontSize=11;align=left;verticalAlign=middle;" vertex="1" parent="trigger_box">
+      <mxGeometry x="20" y="140" width="460" height="30" as="geometry"/>
+    </mxCell>
+
+    <!-- OIDC Auth -->
+    <mxCell id="oidc_box" value="Authentication" style="swimlane;startSize=25;fillColor=#FFEBEE;strokeColor=#C62828;fontSize=11;fontStyle=1;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="600" y="670" width="300" height="100" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="oidc_text" value="GitHub OIDC &#8594; AWS IAM Role&#xa;(No long-lived credentials)" style="text;html=1;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="oidc_box">
+      <mxGeometry x="20" y="35" width="260" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- Main flow edges -->
+    <mxCell id="me1" value="git push" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;" edge="1" source="dev" target="github" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="me2" value="trigger" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;" edge="1" source="github" target="checkout" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="230" y="230"/>
+          <mxPoint x="90" y="230"/>
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="me3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;" edge="1" source="tf_plan" target="approval" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="1150" y="440"/>
+          <mxPoint x="70" y="440"/>
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+  </root>
+</mxGraphModel>
