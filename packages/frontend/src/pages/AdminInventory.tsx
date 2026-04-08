@@ -1,77 +1,66 @@
-import { useState } from 'react';
-import { useProducts } from '../hooks/queries/useProducts';
-import { useForecast } from '../hooks/queries/useForecast';
-import { updateProduct } from '../api/products';
-import { useQueryClient } from '@tanstack/react-query';
-import { useToast } from '../context/ToastContext';
-import { formatCurrency } from '../utils/format';
-import LoadingSpinner from '../components/LoadingSpinner';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+
+interface InventoryItem {
+  id: number;
+  name: string;
+  stock: number;
+  price: number;
+  status: string;
+}
 
 export default function AdminInventory() {
-  const { data: products, isLoading } = useProducts();
-  const queryClient = useQueryClient();
-  const { showToast } = useToast();
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const { data: forecast } = useForecast(selectedId);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editStock, setEditStock] = useState(0);
+  const { token } = useAuth();
+  const [inventory, setInventory] = useState<InventoryItem[]>([]);
 
-  const handleSaveStock = async (id: number) => {
-    try { await updateProduct(id, { stock: editStock }); queryClient.invalidateQueries({ queryKey: ['products'] }); setEditingId(null); showToast('재고가 수정되었습니다', 'success'); }
-    catch { showToast('재고 수정에 실패했습니다', 'error'); }
+  useEffect(() => {
+    fetch('/api/analytics/inventory', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(setInventory);
+  }, [token]);
+
+  const statusColors: Record<string, string> = {
+    out_of_stock: '#dc3545',
+    low_stock: '#ffc107',
+    in_stock: '#28a745'
   };
 
-  if (isLoading) return <div className="flex justify-center p-12"><LoadingSpinner /></div>;
+  const statusLabels: Record<string, string> = {
+    out_of_stock: 'Out of Stock',
+    low_stock: 'Low Stock',
+    in_stock: 'In Stock'
+  };
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">재고 관리</h1>
-      <div className="grid lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 bg-white rounded-lg border overflow-x-auto">
-          <table className="w-full min-w-[500px]">
-            <thead className="bg-gray-50"><tr><th className="text-left px-4 py-3 text-sm">상품</th><th className="text-left px-4 py-3 text-sm">가격</th><th className="text-left px-4 py-3 text-sm">재고</th><th className="px-4 py-3 text-sm">예측</th></tr></thead>
-            <tbody>
-              {products?.map(p => (
-                <tr key={p.id} className={`border-t hover:bg-gray-50 ${p.stock === 0 ? 'bg-red-50' : p.stock < 10 ? 'bg-yellow-50' : ''}`} data-testid={`inventory-row-${p.id}`}>
-                  <td className="px-4 py-3 font-medium">{p.name}</td>
-                  <td className="px-4 py-3 text-sm">{formatCurrency(p.price)}</td>
-                  <td className="px-4 py-3">
-                    {editingId === p.id ? (
-                      <div className="flex items-center gap-1">
-                        <input type="number" value={editStock} onChange={e => setEditStock(Number(e.target.value))} className="w-16 border rounded px-2 py-1 text-sm" data-testid={`inventory-edit-${p.id}`} />
-                        <button onClick={() => handleSaveStock(p.id)} className="text-green-600 text-xs">✓</button>
-                        <button onClick={() => setEditingId(null)} className="text-red-600 text-xs">✕</button>
-                      </div>
-                    ) : (
-                      <button onClick={() => { setEditingId(p.id); setEditStock(p.stock); }} className={`px-2 py-0.5 rounded text-xs font-medium cursor-pointer ${p.stock > 10 ? 'bg-green-100 text-green-700' : p.stock > 0 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`} data-testid={`inventory-stock-${p.id}`}>{p.stock}</button>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 text-center"><button onClick={() => setSelectedId(p.id)} className="text-primary-500 text-xs hover:underline" data-testid={`inventory-forecast-${p.id}`}>📊</button></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="bg-white rounded-lg border p-4">
-          <h2 className="font-bold mb-3">수요 예측</h2>
-          {forecast ? (
-            <div>
-              <p className="text-sm mb-1"><strong>{forecast.productName}</strong></p>
-              <p className="text-xs text-gray-500 mb-3">현재 재고: {forecast.currentStock} | ROP: {forecast.reorderPoint} | 추천 발주: {forecast.suggestedOrderQty}</p>
-              <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={forecast.dailyForecast}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" tick={{ fontSize: 10 }} />
-                  <YAxis tick={{ fontSize: 10 }} />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="quantity" stroke="#667eea" strokeWidth={2} />
-                  <ReferenceLine y={forecast.reorderPoint} stroke="red" strokeDasharray="3 3" label="ROP" />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          ) : <p className="text-gray-400 text-sm">상품을 선택하면 수요 예측을 표시합니다.</p>}
-        </div>
+      <h1 style={{ marginBottom: '2rem' }}>Inventory Management</h1>
+      <div style={{ background: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ borderBottom: '2px solid #ddd' }}>
+              <th style={{ padding: '0.5rem', textAlign: 'left' }}>Product</th>
+              <th style={{ padding: '0.5rem', textAlign: 'left' }}>Stock</th>
+              <th style={{ padding: '0.5rem', textAlign: 'left' }}>Price</th>
+              <th style={{ padding: '0.5rem', textAlign: 'left' }}>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {inventory.map(item => (
+              <tr key={item.id} style={{ borderBottom: '1px solid #eee' }}>
+                <td style={{ padding: '0.5rem' }}>{item.name}</td>
+                <td style={{ padding: '0.5rem', fontWeight: 'bold' }}>{item.stock}</td>
+                <td style={{ padding: '0.5rem' }}>${item.price.toFixed(2)}</td>
+                <td style={{ padding: '0.5rem' }}>
+                  <span style={{ padding: '0.25rem 0.75rem', borderRadius: '4px', fontSize: '0.9rem', background: statusColors[item.status], color: 'white' }}>
+                    {statusLabels[item.status]}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
