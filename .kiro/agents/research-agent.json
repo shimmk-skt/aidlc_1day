@@ -10,7 +10,7 @@
         "tavily-mcp@latest"
       ],
       "env": {
-        "TAVILY_API_KEY": "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",
+        "TAVILY_API_KEY": "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",
         "DEFAULT_PARAMETERS": "{\"include_images\": true, \"max_results\": 15, \"search_depth\": \"advanced\"}"
       }
     }

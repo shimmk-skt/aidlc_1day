@@ -175,3 +175,104 @@
 **Context**: INCEPTION 완료. CONSTRUCTION PHASE 시작.
 
 ---
+
+## Session Resumption — CONSTRUCTION PHASE (Frontend Unit)
+**Timestamp**: 2026-04-08T13:55:00Z
+**User Input**: "Using AI-DLC. 다음 단계를 진행해. 나는 Frontend 유닛을 진행할거야. 브랜치를 새로 생성해서 만들어줘"
+**AI Response**: 세션 재개. INCEPTION 완료 확인. Frontend (FE) 유닛 CONSTRUCTION PHASE 시작. Git 브랜치 `feature/frontend-unit` 생성. Functional Design 단계 시작.
+**Context**: CONSTRUCTION PHASE — Per-Unit Loop (Unit 2: Frontend). 첫 번째 단계: Functional Design.
+
+---
+
+## CONSTRUCTION — Functional Design (Frontend Unit) — Plan 생성
+**Timestamp**: 2026-04-08T13:55:00Z
+**AI Response**: Frontend 유닛 Functional Design Plan 및 질문 파일 생성 중.
+**Context**: Functional Design Step 1-4 실행.
+
+---
+
+## CONSTRUCTION — Functional Design (Frontend Unit) — 답변 수집 완료
+**Timestamp**: 2026-04-08T13:59:56Z
+**User Input**: "완료."
+**AI Response**: 10개 질문 답변 확인. 모호성/모순 없음. Q1:A(전체변환), Q2:B(Daum API), Q3:C(Toss 표준위젯), Q4:A(Recharts), Q5:A(자동재연결), Q6:C(사유+설명+사진), Q7:A(Tailwind 기본), Q8:C(사이드패널), Q9:C(반응형), Q10:B(Phase4 제외). 4개 산출물 생성 완료: domain-entities.md, business-logic-model.md, business-rules.md, frontend-components.md.
+**Context**: Functional Design Step 5-6 완료. 승인 대기.
+
+---
+
+## CONSTRUCTION — Functional Design (Frontend Unit) — 승인
+**Timestamp**: 2026-04-08T14:09:35Z
+**User Input**: "진행해."
+**AI Response**: Functional Design 승인 확인. NFR Requirements 단계로 진행.
+**Context**: Functional Design 완료. NFR Requirements 시작.
+
+---
+
+## CONSTRUCTION — NFR Requirements (Frontend Unit) — 답변 수집 및 산출물 생성
+**Timestamp**: 2026-04-08T14:15:28Z
+**User Input**: "좋아 진행해."
+**AI Response**: 8개 질문 답변 확인. Q1:B(500KB), Q2:A(WCAG AA), Q3:A(Context), Q4:C(fetch+React Query), Q5:A(Good등급), Q6:A(한국어전용), Q7:B(클라이언트최적화), Q8:C(단위+컴포넌트+E2E). 산출물 2개 생성: nfr-requirements.md, tech-stack-decisions.md.
+**Context**: NFR Requirements 완료. 승인 대기.
+
+---
+
+## CONSTRUCTION — NFR Requirements (Frontend Unit) — 승인
+**Timestamp**: 2026-04-08T14:19:18Z
+**User Input**: "contunue to next stage"
+**AI Response**: NFR Requirements 승인 확인. NFR Design 단계로 진행.
+**Context**: NFR Requirements 완료. NFR Design 시작.
+
+---
+
+## CONSTRUCTION — NFR Design (Frontend Unit) — 답변 수집 및 산출물 생성
+**Timestamp**: 2026-04-08T14:21:57Z
+**User Input**: "진행해"
+**AI Response**: 3개 질문 답변 확인. Q1:B(타입기반), Q2:A(WebSocket기반 캐시무효화), Q3:C(전역+페이지 에러바운더리). 산출물 2개 생성: nfr-design-patterns.md, logical-components.md.
+**Context**: NFR Design 완료. 승인 대기.
+
+---
+
+## CONSTRUCTION — NFR Design (Frontend Unit) — 승인
+**Timestamp**: 2026-04-08T14:25:27Z
+**User Input**: "continue"
+**AI Response**: NFR Design 승인 확인. Infrastructure Design 단계로 진행.
+**Context**: NFR Design 완료. Infrastructure Design 시작.
+
+---
+
+## CONSTRUCTION — Infrastructure Design (Frontend Unit) — 답변 수집 및 산출물 생성
+**Timestamp**: 2026-04-08T14:27:42Z
+**User Input**: "진행해."
+**AI Response**: 2개 질문 답변 확인. Q1:B(ECS Fargate Nginx), Q2:A(Vite Proxy). 산출물 2개 생성: infrastructure-design.md, deployment-architecture.md.
+**Context**: Infrastructure Design 완료. 승인 대기.
+
+---
+
+## CONSTRUCTION — Infrastructure Design (Frontend Unit) — 승인
+**Timestamp**: 2026-04-08T14:29:54Z
+**User Input**: "continue"
+**AI Response**: Infrastructure Design 승인 확인. Code Generation 단계로 진행.
+**Context**: Infrastructure Design 완료. Code Generation 시작.
+
+---
+
+## CONSTRUCTION — Code Generation (Frontend Unit) — Part 1: Planning
+**Timestamp**: 2026-04-08T14:29:54Z
+**AI Response**: Code Generation Plan 생성 완료. 16개 Step, 약 70개 파일 (수정 17개 + 신규 53개). 사용자 승인 대기.
+**Context**: Code Generation Part 1 완료. 승인 후 Part 2 (코드 생성) 시작.
+
+---
+
+## CONSTRUCTION — Code Generation (Frontend Unit) — Plan 승인
+**Timestamp**: 2026-04-08T14:31:44Z
+**User Input**: "continue"
+**AI Response**: Code Generation Plan 승인 확인. Part 2 (코드 생성) 시작.
+**Context**: Code Generation Part 2 시작. Step 1부터 순차 실행.
+
+---
+
+## CONSTRUCTION — Code Generation (Frontend Unit) — Part 2: Generation 완료
+**Timestamp**: 2026-04-08T14:31:44Z
+**AI Response**: Code Generation Part 2 완료. 16개 Step 모두 실행. 수정 17개 + 신규 53개 = 총 70개 파일. 10개 story 커버리지 달성.
+**Context**: Code Generation 완료. 승인 대기.
+
+---

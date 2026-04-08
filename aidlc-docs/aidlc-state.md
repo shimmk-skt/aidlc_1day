@@ -3,7 +3,7 @@
 ## Project Information
 - **Project Type**: Brownfield
 - **Start Date**: 2026-04-08T11:17:27Z
-- **Current Stage**: INCEPTION 완료 → CONSTRUCTION PHASE (대기)
+- **Current Stage**: CONSTRUCTION PHASE — Per-Unit: Frontend (FE) — Code Generation (진행 중)
 
 ## Execution Plan Summary
 - **Total Stages to Execute**: 8 (Application Design, Units Generation, Per-Unit: FD+NFRA+NFRD+ID+CG, Build and Test)
@@ -37,3 +37,8 @@
 - [x] INCEPTION - Workflow Planning (2026-04-08T13:17:29Z)
 - [x] INCEPTION - Application Design (2026-04-08T13:21:37Z)
 - [x] INCEPTION - Units Generation (2026-04-08T13:31:51Z)
+- [x] CONSTRUCTION - Frontend (FE) - Functional Design (2026-04-08T13:55:00Z — 완료)
+- [x] CONSTRUCTION - Frontend (FE) - NFR Requirements (2026-04-08T14:09:35Z — 완료)
+- [x] CONSTRUCTION - Frontend (FE) - NFR Design (2026-04-08T14:19:18Z — 완료)
+- [x] CONSTRUCTION - Frontend (FE) - Infrastructure Design (2026-04-08T14:25:27Z — 완료)
+- [ ] CONSTRUCTION - Frontend (FE) - Code Generation (2026-04-08T14:29:54Z — 진행 중)

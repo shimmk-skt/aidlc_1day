@@ -1,83 +1,69 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useState } from 'react';
+import { useOrders } from '../hooks/queries/useOrders';
+import { updateOrderStatus } from '../api/orders';
+import { useQueryClient } from '@tanstack/react-query';
+import { useToast } from '../context/ToastContext';
+import { formatCurrency, formatDateTime } from '../utils/format';
+import { ORDER_STATUS_LABEL } from '../utils/constants';
+import Badge from '../components/Badge';
+import LoadingSpinner from '../components/LoadingSpinner';
+import type { OrderStatus } from '../types/order';
 
-interface Order {
-  id: number;
-  user_name: string;
-  user_email: string;
-  subtotal: number;
-  gst: number;
-  total: number;
-  status: string;
-  created_at: string;
-}
+const STATUS_TRANSITIONS: Partial<Record<OrderStatus, OrderStatus[]>> = {
+  PENDING: ['CONFIRMED', 'CANCELLED'], CONFIRMED: ['PROCESSING', 'ON_HOLD', 'CANCELLED'],
+  ON_HOLD: ['CONFIRMED', 'CANCELLED'], PROCESSING: ['PICKED', 'BACKORDERED'],
+  BACKORDERED: ['PROCESSING', 'CANCELLED'], PICKED: ['PACKED'], PACKED: ['SHIPPED'],
+  SHIPPED: ['DELIVERED'], DELIVERED: ['RETURN_INITIATED'], RETURN_INITIATED: ['RETURN_RECEIVED'],
+  RETURN_RECEIVED: ['REFUNDED', 'EXCHANGED'],
+};
 
 export default function AdminOrders() {
-  const { token } = useAuth();
-  const [orders, setOrders] = useState<Order[]>([]);
+  const { data: orders, isLoading } = useOrders();
+  const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const [filter, setFilter] = useState<string>('');
 
-  useEffect(() => {
-    loadOrders();
-  }, []);
+  const filtered = orders?.filter(o => !filter || o.status === filter);
 
-  const loadOrders = () => {
-    fetch('/api/orders', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(setOrders);
+  const handleStatusChange = async (orderId: number, newStatus: string) => {
+    try { await updateOrderStatus(orderId, newStatus); queryClient.invalidateQueries({ queryKey: ['orders'] }); showToast('주문 상태가 변경되었습니다', 'success'); }
+    catch { showToast('상태 변경에 실패했습니다', 'error'); }
   };
 
-  const updateStatus = async (id: number, status: string) => {
-    await fetch(`/api/orders/${id}/status`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ status })
-    });
-    loadOrders();
-  };
+  if (isLoading) return <div className="flex justify-center p-12"><LoadingSpinner /></div>;
 
   return (
     <div>
-      <h1 style={{ marginBottom: '2rem' }}>Manage Orders</h1>
-      <div style={{ background: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ borderBottom: '2px solid #ddd' }}>
-              <th style={{ padding: '0.5rem', textAlign: 'left' }}>Order ID</th>
-              <th style={{ padding: '0.5rem', textAlign: 'left' }}>Customer</th>
-              <th style={{ padding: '0.5rem', textAlign: 'left' }}>Subtotal</th>
-              <th style={{ padding: '0.5rem', textAlign: 'left' }}>GST</th>
-              <th style={{ padding: '0.5rem', textAlign: 'left' }}>Total</th>
-              <th style={{ padding: '0.5rem', textAlign: 'left' }}>Status</th>
-              <th style={{ padding: '0.5rem', textAlign: 'left' }}>Date</th>
-              <th style={{ padding: '0.5rem', textAlign: 'left' }}>Actions</th>
-            </tr>
-          </thead>
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+        <h1 className="text-2xl font-bold">주문 관리</h1>
+        <select value={filter} onChange={e => setFilter(e.target.value)} className="border rounded-lg px-3 py-2 text-sm" data-testid="admin-orders-filter" aria-label="상태 필터">
+          <option value="">전체 상태</option>
+          {Object.entries(ORDER_STATUS_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+        </select>
+      </div>
+      <div className="bg-white rounded-lg border overflow-x-auto">
+        <table className="w-full min-w-[600px]">
+          <thead className="bg-gray-50"><tr><th className="text-left px-4 py-3 text-sm">주문 #</th><th className="text-left px-4 py-3 text-sm">일시</th><th className="text-left px-4 py-3 text-sm">금액</th><th className="text-left px-4 py-3 text-sm">상태</th><th className="text-left px-4 py-3 text-sm">액션</th></tr></thead>
           <tbody>
-            {orders.map(order => (
-              <tr key={order.id} style={{ borderBottom: '1px solid #eee' }}>
-                <td style={{ padding: '0.5rem' }}>#{order.id}</td>
-                <td style={{ padding: '0.5rem' }}>{order.user_name}</td>
-                <td style={{ padding: '0.5rem' }}>${order.subtotal.toFixed(2)}</td>
-                <td style={{ padding: '0.5rem' }}>${order.gst.toFixed(2)}</td>
-                <td style={{ padding: '0.5rem' }}>${order.total.toFixed(2)}</td>
-                <td style={{ padding: '0.5rem' }}>{order.status}</td>
-                <td style={{ padding: '0.5rem' }}>{new Date(order.created_at).toLocaleDateString()}</td>
-                <td style={{ padding: '0.5rem' }}>
-                  <select value={order.status} onChange={e => updateStatus(order.id, e.target.value)} style={{ padding: '0.25rem' }}>
-                    <option value="pending">Pending</option>
-                    <option value="processing">Processing</option>
-                    <option value="shipped">Shipped</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                </td>
-              </tr>
-            ))}
+            {filtered?.map(order => {
+              const transitions = STATUS_TRANSITIONS[order.status] || [];
+              return (
+                <tr key={order.id} className="border-t" data-testid={`admin-order-${order.id}`}>
+                  <td className="px-4 py-3 font-medium">#{order.id}</td>
+                  <td className="px-4 py-3 text-sm text-gray-500">{formatDateTime(order.createdAt)}</td>
+                  <td className="px-4 py-3 font-bold">{formatCurrency(order.totalAmount)}</td>
+                  <td className="px-4 py-3"><Badge status={order.status} /></td>
+                  <td className="px-4 py-3">
+                    {transitions.length > 0 && (
+                      <select onChange={e => { if (e.target.value) handleStatusChange(order.id, e.target.value); e.target.value = ''; }} defaultValue="" className="border rounded px-2 py-1 text-xs" data-testid={`admin-order-status-${order.id}`}>
+                        <option value="">상태 변경</option>
+                        {transitions.map(s => <option key={s} value={s}>{ORDER_STATUS_LABEL[s]}</option>)}
+                      </select>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

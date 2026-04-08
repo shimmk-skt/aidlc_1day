@@ -1,56 +1,37 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-
-interface Order {
-  id: number;
-  subtotal: number;
-  gst: number;
-  total: number;
-  status: string;
-  created_at: string;
-}
+import { Link } from 'react-router-dom';
+import { useOrders } from '../hooks/queries/useOrders';
+import { formatCurrency, formatDate } from '../utils/format';
+import Badge from '../components/Badge';
+import LoadingSpinner from '../components/LoadingSpinner';
+import EmptyState from '../components/EmptyState';
 
 export default function Orders() {
-  const { token } = useAuth();
-  const [orders, setOrders] = useState<Order[]>([]);
+  const { data: orders, isLoading } = useOrders();
 
-  useEffect(() => {
-    fetch('/api/orders', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(setOrders);
-  }, [token]);
-
-  const statusColors: Record<string, string> = {
-    pending: '#ffc107',
-    processing: '#17a2b8',
-    shipped: '#007bff',
-    delivered: '#28a745',
-    cancelled: '#dc3545'
-  };
+  if (isLoading) return <div className="flex justify-center p-12"><LoadingSpinner /></div>;
+  if (!orders?.length) return <EmptyState icon="📦" message="주문 내역이 없습니다" actionLabel="쇼핑하러 가기" onAction={() => window.location.href = '/'} />;
 
   return (
     <div>
-      <h1 style={{ marginBottom: '2rem' }}>My Orders</h1>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <h1 className="text-2xl font-bold mb-6">주문 내역</h1>
+      <div className="space-y-4">
         {orders.map(order => (
-          <div key={order.id} style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <h3>Order #{order.id}</h3>
-                <p style={{ color: '#666', fontSize: '0.9rem' }}>{new Date(order.created_at).toLocaleDateString()}</p>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <p style={{ fontSize: '0.9rem', color: '#666', margin: '0.25rem 0' }}>Subtotal: ${order.subtotal.toFixed(2)}</p>
-                <p style={{ fontSize: '0.9rem', color: '#666', margin: '0.25rem 0' }}>GST (10%): ${order.gst.toFixed(2)}</p>
-                <p style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Total: ${order.total.toFixed(2)}</p>
-                <span style={{ padding: '0.25rem 0.75rem', borderRadius: '4px', fontSize: '0.9rem', background: statusColors[order.status], color: 'white' }}>
-                  {order.status}
-                </span>
-              </div>
+          <Link key={order.id} to={`/orders/${order.id}`} className="block bg-white rounded-lg border p-4 hover:shadow-md transition" data-testid={`order-card-${order.id}`}>
+            <div className="flex items-center justify-between mb-2">
+              <span className="font-medium">주문 #{order.id}</span>
+              <Badge status={order.status} />
             </div>
-          </div>
+            <div className="flex items-center justify-between text-sm text-gray-500">
+              <span>{formatDate(order.createdAt)}</span>
+              <span className="font-bold text-gray-800">{formatCurrency(order.totalAmount)}</span>
+            </div>
+            <div className="mt-2 flex gap-2 overflow-x-auto">
+              {order.items.slice(0, 3).map(item => (
+                <img key={item.id} src={item.productImageUrl} alt={item.productName} className="w-12 h-12 object-cover rounded" />
+              ))}
+              {order.items.length > 3 && <span className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-500">+{order.items.length - 3}</span>}
+            </div>
+          </Link>
         ))}
       </div>
     </div>

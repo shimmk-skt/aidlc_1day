@@ -1,81 +1,50 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  image_url: string;
-}
+import { useParams, Link } from 'react-router-dom';
+import { useProduct } from '../hooks/queries/useProducts';
+import { useProductRecommendations } from '../hooks/queries/useRecommendations';
+import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
+import { formatCurrency } from '../utils/format';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 export default function ProductDetail() {
-  const { id } = useParams();
-  const { user, token } = useAuth();
-  const navigate = useNavigate();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [quantity, setQuantity] = useState(1);
-  const [message, setMessage] = useState('');
+  const { id } = useParams<{ id: string }>();
+  const { data: product, isLoading } = useProduct(Number(id));
+  const { data: recs } = useProductRecommendations(Number(id));
+  const { addItem } = useCart();
+  const { showToast } = useToast();
 
-  useEffect(() => {
-    fetch(`/api/products/${id}`)
-      .then(res => res.json())
-      .then(setProduct);
-  }, [id]);
-
-  const handleOrder = async () => {
-    if (!user) {
-      navigate('/login');
-      return;
-    }
-
-    try {
-      const res = await fetch('/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          items: [{ product_id: product?.id, quantity }]
-        })
-      });
-
-      if (res.ok) {
-        setMessage('Order placed successfully!');
-        setTimeout(() => navigate('/orders'), 2000);
-      } else {
-        setMessage('Order failed');
-      }
-    } catch (err) {
-      setMessage('Order failed');
-    }
-  };
-
-  if (!product) return <div>Loading...</div>;
+  if (isLoading || !product) return <div className="flex justify-center p-12"><LoadingSpinner /></div>;
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <div style={{ background: 'white', borderRadius: '8px', padding: '2rem', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-        <img src={product.image_url} alt={product.name} style={{ width: '100%', height: '400px', objectFit: 'cover', borderRadius: '8px', marginBottom: '2rem' }} />
-        <h1 style={{ marginBottom: '1rem' }}>{product.name}</h1>
-        <p style={{ color: '#666', marginBottom: '2rem' }}>{product.description}</p>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <span style={{ fontSize: '2rem', fontWeight: 'bold', color: '#007bff' }}>${product.price}</span>
-          <span style={{ fontSize: '1rem', color: product.stock > 0 ? '#28a745' : '#dc3545' }}>
-            {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
-          </span>
+    <div>
+      <div className="bg-white rounded-xl shadow-sm border p-6 flex flex-col md:flex-row gap-8">
+        <img src={product.imageUrl} alt={product.name} className="w-full md:w-96 h-72 object-cover rounded-lg" />
+        <div className="flex-1">
+          <h1 className="text-2xl font-bold text-gray-800">{product.name}</h1>
+          <p className="text-3xl font-bold text-primary-600 mt-2">{formatCurrency(product.price)}</p>
+          <p className={`text-sm mt-2 ${product.stock > 10 ? 'text-green-600' : product.stock > 0 ? 'text-yellow-600' : 'text-red-600'}`}>
+            {product.stock > 0 ? `재고 ${product.stock}개` : '품절'}
+          </p>
+          <p className="text-gray-600 mt-4">{product.description}</p>
+          <button onClick={() => { addItem(product); showToast('장바구니에 추가했습니다', 'success'); }} disabled={product.stock === 0} className="mt-6 bg-primary-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-600 transition disabled:opacity-40" data-testid="product-add-to-cart">
+            {product.stock > 0 ? '장바구니 담기' : '품절'}
+          </button>
         </div>
-        {product.stock > 0 && (
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <input type="number" min="1" max={product.stock} value={quantity} onChange={e => setQuantity(Number(e.target.value))} style={{ width: '100px' }} />
-            <button onClick={handleOrder} style={{ background: '#007bff', color: 'white', flex: 1 }}>Place Order</button>
-          </div>
-        )}
-        {message && <p style={{ marginTop: '1rem', color: message.includes('success') ? '#28a745' : '#dc3545' }}>{message}</p>}
       </div>
+      {recs && recs.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-lg font-bold mb-4">함께 구매한 상품</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {recs.map(r => (
+              <Link key={r.productId} to={`/products/${r.productId}`} className="bg-white rounded-lg border p-3 hover:shadow-md transition">
+                <img src={r.product.imageUrl} alt={r.product.name} className="w-full h-32 object-cover rounded" loading="lazy" />
+                <p className="text-sm font-medium mt-2 truncate">{r.product.name}</p>
+                <p className="text-sm text-primary-600 font-bold">{formatCurrency(r.product.price)}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,46 +1,41 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  image_url: string;
-}
+import { useProducts } from '../hooks/queries/useProducts';
+import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
+import { formatCurrency } from '../utils/format';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 export default function Storefront() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [search, setSearch] = useState('');
+  const { data: products, isLoading } = useProducts(search || undefined);
+  const { addItem } = useCart();
+  const { showToast } = useToast();
 
-  useEffect(() => {
-    fetch('/api/products')
-      .then(res => res.json())
-      .then(setProducts);
-  }, []);
+  if (isLoading) return <div className="flex justify-center p-12"><LoadingSpinner /></div>;
 
   return (
     <div>
-      <h1 style={{ marginBottom: '2rem', fontSize: '2.5rem', fontWeight: 'bold', color: 'white', textShadow: '0 2px 10px rgba(0,0,0,0.2)' }}>🛍️ Featured Products</h1>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '2rem' }}>
-        {products.map(product => (
-          <Link key={product.id} to={`/products/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-            <div style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 30px rgba(0,0,0,0.12)', transition: 'all 0.3s ease', cursor: 'pointer' }} onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.2)'; }} onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.12)'; }}>
-              <div style={{ position: 'relative', paddingTop: '75%', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' }}>
-                <img src={product.image_url} alt={product.name} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-              </div>
-              <div style={{ padding: '1.5rem' }}>
-                <h3 style={{ marginBottom: '0.5rem', fontSize: '1.25rem', fontWeight: '600' }}>{product.name}</h3>
-                <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '1rem', lineHeight: '1.5' }}>{product.description}</p>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '1.5rem', fontWeight: 'bold', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>${product.price}</span>
-                  <span style={{ padding: '4px 12px', borderRadius: '12px', fontSize: '0.85rem', fontWeight: '600', background: product.stock > 0 ? '#d4edda' : '#f8d7da', color: product.stock > 0 ? '#155724' : '#721c24' }}>
-                    {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
-                  </span>
-                </div>
-              </div>
+      <div className="mb-6">
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="상품 검색..." className="w-full md:w-80 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary-500" data-testid="storefront-search" aria-label="상품 검색" />
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {products?.map(p => (
+          <div key={p.id} className="bg-white rounded-xl shadow-sm border hover:shadow-md transition overflow-hidden" data-testid={`product-card-${p.id}`}>
+            <Link to={`/products/${p.id}`}>
+              <img src={p.imageUrl} alt={p.name} className="w-full h-48 object-cover" loading="lazy" />
+            </Link>
+            <div className="p-4">
+              <Link to={`/products/${p.id}`} className="font-medium text-gray-800 hover:text-primary-500 transition">{p.name}</Link>
+              <p className="text-primary-600 font-bold mt-1">{formatCurrency(p.price)}</p>
+              <p className={`text-xs mt-1 ${p.stock > 10 ? 'text-green-600' : p.stock > 0 ? 'text-yellow-600' : 'text-red-600'}`}>
+                {p.stock > 0 ? `재고 ${p.stock}개` : '품절'}
+              </p>
+              <button onClick={() => { addItem(p); showToast('장바구니에 추가했습니다', 'success'); }} disabled={p.stock === 0} className="mt-3 w-full bg-primary-500 text-white py-2 rounded-lg text-sm font-medium hover:bg-primary-600 transition disabled:opacity-40 disabled:cursor-not-allowed" data-testid={`add-to-cart-${p.id}`}>
+                {p.stock > 0 ? '장바구니 담기' : '품절'}
+              </button>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </div>
