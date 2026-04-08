@@ -86,7 +86,7 @@ resource "aws_ecs_task_definition" "api" {
     environment = [
       { name = "NODE_ENV", value = var.environment },
       { name = "PORT", value = "3001" },
-      { name = "DATABASE_URL", value = "postgresql://${var.rds_username}:${var.rds_password}@${var.rds_endpoint}/inventrix" },
+      { name = "DATABASE_URL", value = "postgresql://${var.rds_username}:${var.rds_password}@${var.rds_endpoint}/inventrix?ssl=true" },
       { name = "REDIS_URL", value = "rediss://${var.redis_endpoint}:6379" },
       { name = "CORS_ORIGIN", value = "*" }
     ]
